@@ -18,7 +18,7 @@
                 <div class="card-body d-flex flex-column justify-content-center text-center"
                      style="min-height:150px;">
                     <h5 class="card-title">Ventas Hoy</h5>
-                    <h2 class="fw-bold">S/ {{ $ventasHoy }}</h2>
+                    <h2 class="fw-bold">C$ {{ $ventasHoy }}</h2>
                 </div>
             </div>
         </div>
@@ -48,5 +48,4 @@
     </div>
 
 </div>
-
-@endsection
+@endsection 

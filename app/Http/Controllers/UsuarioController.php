@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Rol;
-use App\Models\User;
+use App\Models\Usuario;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 
@@ -14,7 +14,7 @@ class UsuarioController extends Controller
      */
     public function index()
     {
-        $usuarios = User::with('rol')->get();
+        $usuarios = Usuario::with('rol')->get();
 
         return view('usuarios.index', compact('usuarios'));
     }
@@ -34,16 +34,26 @@ class UsuarioController extends Controller
      */
     public function store(Request $request)
     {
-          User::create([
-            'nombre_completo' => $request->nombre_completo,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
-            'id_rol' => $request->id_rol
-         ]);
+          $request->validate([
+        'username' => 'required|unique:usuarios',
+        'nombre_completo' => 'required',
+        'email' => 'required|email|unique:usuarios',
+        'password' => 'required|min:6',
+        'id_rol' => 'required'
+    ]);
 
-            return redirect()
-                ->route('usuarios.index')
-                ->with('success', 'Usuario creado correctamente');
+        Usuario::create([
+        'username' => $request->username,
+        'nombre_completo' => $request->nombre_completo,
+        'email' => $request->email,
+        'password_hash' => bcrypt($request->password),
+        'id_rol' => $request->id_rol,
+        'activo' => 1
+    ]);
+
+    return redirect()
+        ->route('usuarios.index')
+        ->with('success', 'Usuario creado correctamente');
     }
 
     /**
@@ -59,7 +69,11 @@ class UsuarioController extends Controller
      */
     public function edit(string $id)
     {
-        //
+        $usuario = Usuario::findOrFail($id);
+
+        $roles = Rol::all();
+
+        return view('usuarios.edit', compact('usuario', 'roles'));
     }
 
     /**
@@ -67,7 +81,18 @@ class UsuarioController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $usuario = Usuario::findOrFail($id);
+
+        $usuario->update([
+            'username' => $request->username,
+            'nombre_completo' => $request->nombre_completo,
+            'email' => $request->email,
+            'id_rol' => $request->id_rol
+            ]);
+
+        return redirect()
+            ->route('usuarios.index')
+            ->with('success', 'Usuario actualizado correctamente');
     }
 
     /**
@@ -75,6 +100,43 @@ class UsuarioController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        $usuario = Usuario::findOrFail($id);
+
+        if($usuario->id_usuario == auth()->user()->id_usuario){
+        return back()->with('error', 'No puede eliminar su propio usuario');
+        }
+
+        $usuario->delete();
+
+        return redirect()
+        ->route('usuarios.index')
+        ->with('success', 'Usuario eliminado correctamente');
+    }
+
+    public function passwordForm($id)
+    {
+        $usuario = Usuario::findOrFail($id);
+
+        return view(
+            'usuarios.password',
+            compact('usuario')
+        );
+    }
+
+    public function updatePassword(Request $request, $id)
+    {
+        $request->validate([
+            'password' => 'required|min:6|confirmed'
+        ]);
+
+        $usuario = Usuario::findOrFail($id);
+
+        $usuario->update([
+            'password_hash' => bcrypt($request->password)
+        ]);
+
+        return redirect()
+            ->route('usuarios.index')
+            ->with('success', 'Contraseña actualizada');
     }
 }

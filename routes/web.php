@@ -36,5 +36,14 @@ Route::middleware('auth')->group(function () {
 Route::resource('clientes', ClienteController::class);
 
 Route::resource('usuarios', UsuarioController::class);
+    Route::get(
+    '/usuarios/{id}/password',
+    [UsuarioController::class, 'passwordForm']
+    )->name('usuarios.password');
+
+    Route::put(
+        '/usuarios/{id}/password',
+        [UsuarioController::class, 'updatePassword']
+    )->name('usuarios.password.update');
 
 Route::resource('productos', ProductoController::class);
