@@ -90,6 +90,10 @@ class UsuarioController extends Controller
             'id_rol' => $request->id_rol
             ]);
 
+            $usuario->update([
+            'activo' => 0
+            ]);
+
         return redirect()
             ->route('usuarios.index')
             ->with('success', 'Usuario actualizado correctamente');

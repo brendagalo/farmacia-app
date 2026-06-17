@@ -24,26 +24,42 @@
                     <table class="table table-hover">
                         <thead class="table-dark">
                             <tr>
+                                <th>Código</th>
                                 <th>Nombre</th>
+                                <th>Categoría</th>
+                                <th>Proveedor</th>
+                                <th>Concentración</th>
+                                <th>Presentación</th>
+                                <th>Precio Compra</th>
+                                <th>Precio Venta</th>
+                                <th>Stock Mínimo</th>
+                                <th>Stock Actual</th>
                                 <th>Descripción</th>
-                                <th>Precio</th>
-                                <th>Stock</th>
+                                <th>Creado</th>
+                                <th>Actualizado</th>
                                 <th>Acciones</th>
+                            
                             </tr>
                         </thead>
 
                         <tbody>
             @foreach($productos as $p)
             <tr>
+                <td>{{ $p->codigo_barra }}</td> 
                 <td>{{ $p->nombre }}</td>
-
+                <td>{{ $p->categoria->nombre ?? 'N/A' }}</td>
+                <td>{{ $p->proveedor->nombre ?? 'N/A' }}</td>
+                <td>{{ $p->concentracion }}</td>
+                <td>{{ $p->presentacion }}</td>
+                <td>C$ {{ number_format($p->precio_compra, 2) }}</td>
+                <td>C$ {{ number_format($p->precio_venta, 2) }}</td>
+                <td>{{ $p->stock_minimo }}</td>
+                <td>{{ $p->stock_actual }}</td>
                 <td title="{{ $p->descripcion }}">
                     {{ \Illuminate\Support\Str::limit($p->descripcion, 50, '...') }}
                 </td>
-
-                <td>C$ {{ number_format($p->precio_venta, 2) }}</td>
-
-                <td>{{ $p->stock_actual }}</td>
+                <td>{{ $p->creado_en }}</td>
+                <td>{{ $p->actualizado_en }}</td>
 
                 <td>
                     <a href="{{ route('productos.edit', $p->id_producto) }}"
