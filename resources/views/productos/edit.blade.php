@@ -115,6 +115,7 @@
                 <input type="number"
                     name="stock_minimo"
                     class="form-control"
+                    min="0"
                     value="{{ $producto->stock_minimo }}" required>  
             </div>
 
@@ -124,6 +125,7 @@
                 <input type="number"
                     name="stock_actual"
                     class="form-control"
+                    min="0"
                     value="{{ $producto->stock_actual }}" required>
             </div>
 

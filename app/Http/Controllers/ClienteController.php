@@ -10,9 +10,16 @@ class ClienteController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-       return view('clientes.index');
+       $buscar = $request->buscar;
+
+        $clientes = Cliente::where('nombres', 'LIKE', "%$buscar%")
+            ->orWhere('apellidos', 'LIKE', "%$buscar%")
+            ->orWhere('cedula', 'LIKE', "%$buscar%")
+            ->get();
+
+        return view('clientes.index', compact('clientes'));
     }
 
     /**
@@ -28,11 +35,30 @@ class ClienteController extends Controller
      */
     public function store(Request $request)
     {
-        Cliente::create($request->all());
+        $request->validate([
+        'nombres' => 'required',
+        'apellidos' => 'required',
+        'cedula' => 'nullable|unique:clientes,cedula',
+        'telefono' => 'nullable',
+        'direccion' => 'nullable',
+        'email' => 'nullable|email'
+        ]);
 
-        return redirect()->route('clientes.index')->with('success','Cliente registrado');
+        Cliente::create([
+            'nombres' => $request->nombres,
+            'apellidos' => $request->apellidos,
+            'cedula' => $request->cedula,
+            'telefono' => $request->telefono,
+            'direccion' => $request->direccion,
+            'email' => $request->email,
+            'estado' => 1
+        ]);
+
+        return redirect()
+            ->route('clientes.index')
+            ->with('success', 'Cliente registrado correctamente');
     }
-
+    
     /**
      * Display the specified resource.
      */
@@ -46,7 +72,10 @@ class ClienteController extends Controller
      */
     public function edit(string $id)
     {
-        //
+        $cliente = Cliente::findOrFail($id);
+
+        return view('clientes.edit', compact('cliente'));
+
     }
 
     /**
@@ -54,7 +83,28 @@ class ClienteController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $request->validate([
+        'nombres' => 'required',
+        'apellidos' => 'required',
+        'cedula' => 'nullable|unique:clientes,cedula,' . $id . ',id_cliente',
+        'email' => 'nullable|email'
+        ]);
+
+        $cliente = Cliente::findOrFail($id);
+
+        $cliente->update([
+            'nombres' => $request->nombres,
+            'apellidos' => $request->apellidos,
+            'cedula' => $request->cedula,
+            'telefono' => $request->telefono,
+            'direccion' => $request->direccion,
+            'email' => $request->email
+        ]);
+
+        return redirect()
+            ->route('clientes.index')
+            ->with('success', 'Cliente actualizado correctamente'); 
+
     }
 
     /**
@@ -62,6 +112,12 @@ class ClienteController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        $cliente = Cliente::findOrFail($id);
+
+        $cliente->delete();
+
+        return redirect()
+            ->route('clientes.index')
+            ->with('success', 'Cliente eliminado correctamente');
     }
 }

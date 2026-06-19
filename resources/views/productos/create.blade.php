@@ -114,6 +114,7 @@
             <input type="number"
                 name="stock_minimo"
                 class="form-control"
+                min="0"
                 required>
         </div>
         <div class="mb-3">
@@ -122,6 +123,7 @@
             <input type="number"
                 name="stock_actual"
                 class="form-control"
+                min="0"
                 required>
         
         <div class="mb-3">
