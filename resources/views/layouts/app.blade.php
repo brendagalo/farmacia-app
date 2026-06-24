@@ -82,9 +82,10 @@
                 </li>
             @endif
 
-            <!-- Ventas -->
             <li class="nav-item">
-                <a class="nav-link text-white">
+                <a href="{{ route('ventas.index') }}"
+                class="nav-link text-white {{ request()->routeIs('ventas.*') ? 'bg-secondary rounded' : '' }}">
+
                     <i class="bi bi-cart-check"></i>
                     Ventas
                 </a>

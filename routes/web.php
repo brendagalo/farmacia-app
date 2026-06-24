@@ -8,6 +8,8 @@ use App\Http\Controllers\ClienteController;
 use App\Http\Controllers\UsuarioController;
 use Illuminate\Support\Facades\Route;
 
+use App\Http\Controllers\VentaController;
+
 Route::resource('productos', ProductoController::class)
     ->middleware(['auth']);
 
@@ -47,3 +49,12 @@ Route::resource('usuarios', UsuarioController::class);
     )->name('usuarios.password.update');
 
 Route::resource('productos', ProductoController::class);
+
+
+Route::get('/ventas', [VentaController::class, 'index'])
+    ->name('ventas.index')
+    ->middleware('auth');
+
+Route::post('/ventas', [VentaController::class, 'procesar'])
+    ->name('ventas.procesar')
+    ->middleware('auth');
