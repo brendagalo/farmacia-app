@@ -1,5 +1,8 @@
 <!DOCTYPE html>
 <html lang="es">
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -82,9 +85,10 @@
                 </li>
             @endif
 
-            <!-- Ventas -->
             <li class="nav-item">
-                <a class="nav-link text-white">
+                <a href="{{ route('ventas.index') }}"
+                class="nav-link text-white {{ request()->routeIs('ventas.*') ? 'bg-secondary rounded' : '' }}">
+
                     <i class="bi bi-cart-check"></i>
                     Ventas
                 </a>
@@ -131,6 +135,6 @@
 
 <!-- Bootstrap JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-
+@stack('scripts')
 </body>
 </html>

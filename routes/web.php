@@ -7,6 +7,7 @@ use App\Http\Controllers\ProductoController;
 use App\Http\Controllers\ClienteController;
 use App\Http\Controllers\UsuarioController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\VentaController;
 
 Route::resource('productos', ProductoController::class)
     ->middleware(['auth']);
@@ -47,3 +48,23 @@ Route::resource('usuarios', UsuarioController::class);
     )->name('usuarios.password.update');
 
 Route::resource('productos', ProductoController::class);
+
+Route::get('/ventas', [VentaController::class, 'index'])
+    ->name('ventas.index')
+    ->middleware('auth');
+
+Route::post('/ventas', [VentaController::class, 'procesar'])
+    ->name('ventas.procesar')
+    ->middleware('auth');
+
+Route::get('/ventas/historial', [VentaController::class, 'historial'])
+    ->name('ventas.historial')
+    ->middleware('auth');
+
+Route::get('/ventas/{id}', [VentaController::class, 'show'])
+    ->name('ventas.show')
+    ->middleware('auth');
+
+Route::put('/ventas/{id}/anular', [VentaController::class, 'anular'])
+    ->name('ventas.anular')
+    ->middleware('auth');
