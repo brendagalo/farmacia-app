@@ -74,6 +74,17 @@
             </li>
             @endif
 
+               <!-- Compras -->
+            @if(auth()->user()->rol->nombre == 'ADMINISTRADOR')
+            <li class="nav-item">
+                <a class="nav-link text-white {{ request()->routeIs('compras.*') ? 'fw-bold bg-secondary rounded' : '' }}"
+                   href="{{ route('compras.index') }}">
+                    <i class="bi bi-box-seam"></i>
+                    Compras
+                </a>
+            </li>
+            @endif
+
             <!-- Usuarios -->
             @if(auth()->user()->rol->nombre == 'ADMINISTRADOR')
                 <li class="nav-item">

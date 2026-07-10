@@ -9,6 +9,11 @@ use App\Http\Controllers\UsuarioController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\VentaController;
 
+use App\Http\Controllers\CompraController;
+
+//Route::get('/compras', [CompraController::class, 'index']);
+Route::resource('compras', CompraController::class);
+
 Route::resource('productos', ProductoController::class)
     ->middleware(['auth']);
 
@@ -33,6 +38,8 @@ Route::middleware('auth')->group(function () {
 });
 
 });
+
+Route::post('/compras/{id}/aprobar', [CompraController::class, 'aprobar'])->name('compras.aprobar');
 
 Route::resource('clientes', ClienteController::class);
 
