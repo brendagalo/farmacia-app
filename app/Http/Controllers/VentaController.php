@@ -6,13 +6,27 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Models\Producto;
 
+
 class VentaController extends Controller
 {
     // ✅ Mostrar POS
     public function index()
     {
+
+        $caja = DB::table('caja')
+        ->where('estado', 'ABIERTA')
+        ->first();
+
+        if (!$caja) {
+            return redirect()
+                ->route('caja.index')
+                ->with('error', 'Debe abrir una caja antes de realizar ventas.');
+        }
+
         $productos = Producto::where('activo', 1)->get();
-        return view('ventas.index', compact('productos'));
+        return view('ventas.index', compact('productos','caja' ));
+
+
     }
 
    // dd($request->all());
@@ -134,14 +148,14 @@ class VentaController extends Controller
 
         try {
 
-            // ✅ Generar ticket
+            //  Generar ticket
             $ticket = 'TICKET-' . time();
 
-            // ✅ Calcular valores
+            //  Calcular valores
             $subtotal = $request->total / 1.18;
             $igv = $request->total - $subtotal;
 
-            // ✅ Insertar venta completa
+            //  Insertar venta completa
             $ventaId = DB::table('ventas')->insertGetId([
                 'numero_ticket' => $ticket,
                 'id_usuario' => auth()->user()->id_usuario,
@@ -163,7 +177,7 @@ class VentaController extends Controller
             ]);
 
 
-            // ✅ Convertir JSON a array
+            //  Convertir JSON a array
             $productos = json_decode($request->productos, true);
 
             foreach ($productos as $item) {
@@ -179,7 +193,7 @@ class VentaController extends Controller
 
             foreach ($productos as $item) {
 
-                // ✅ Insertar detalle
+                //  Insertar detalle
                 DB::table('detalle_ventas')->insert([
                     'id_venta' => $ventaId,
                     'id_producto' => $item['id'],
@@ -188,13 +202,13 @@ class VentaController extends Controller
                     'subtotal' => $item['cantidad'] * $item['precio']
                 ]);
 
-                // ✅ Descontar stock
+                //  Descontar stock
                 DB::table('productos')
                     ->where('id_producto', $item['id'])
                     ->decrement('stock_actual', $item['cantidad']);
             }
 
-            // ✅ Auditoría
+            //  Auditoría
             DB::table('auditoria')->insert([
                 'id_usuario' => auth()->user()->id_usuario,
                 'tabla_afectada' => 'ventas',

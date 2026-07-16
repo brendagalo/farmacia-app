@@ -8,6 +8,8 @@ use App\Http\Controllers\ClienteController;
 use App\Http\Controllers\UsuarioController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\VentaController;
+use App\Http\Controllers\CajaController;
+use App\Http\Controllers\CompraController;
 
 Route::resource('productos', ProductoController::class)
     ->middleware(['auth']);
@@ -68,3 +70,41 @@ Route::get('/ventas/{id}', [VentaController::class, 'show'])
 Route::put('/ventas/{id}/anular', [VentaController::class, 'anular'])
     ->name('ventas.anular')
     ->middleware('auth');
+
+Route::middleware('auth')->group(function () {
+
+    Route::get('/caja', [CajaController::class,'index'])
+        ->name('caja.index');
+
+    Route::post('/caja/abrir', [CajaController::class,'abrir'])
+        ->name('caja.abrir');
+
+});
+
+//Route::get('/compras', [CompraController::class, 'index']);
+Route::resource('compras', CompraController::class);
+Route::post('/compras/{id}/aprobar', [CompraController::class, 'aprobar'])->name('compras.aprobar');
+
+//Caja
+    Route::get('/caja/ingreso', [CajaController::class,'ingreso'])
+        ->name('caja.ingreso');
+
+        Route::post('/caja/ingreso', [CajaController::class,'guardarIngreso'])
+            ->name('caja.ingreso.guardar');
+
+    Route::get('/caja/egreso', [CajaController::class, 'egreso'])
+        ->name('caja.egreso');
+
+        Route::post('/caja/egreso', [CajaController::class, 'guardarEgreso'])
+            ->name('caja.egreso.guardar');
+
+    Route::get('/caja/movimientos', [CajaController::class, 'movimientos'])
+        ->name('caja.movimientos');
+        Route::get('/caja/arqueo', [CajaController::class,'arqueo'])
+    ->name('caja.arqueo');
+
+    Route::post('/caja/arqueo', [CajaController::class,'guardarArqueo'])
+        ->name('caja.arqueo.guardar');
+    
+    Route::post('/caja/cerrar', [CajaController::class, 'cerrarCaja'])
+        ->name('caja.cerrar');

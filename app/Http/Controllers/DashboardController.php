@@ -10,6 +10,7 @@ class DashboardController extends Controller
     {
         $ventasHoy = DB::table('ventas')
             ->whereDate('fecha_venta', now()->toDateString())
+            ->where('estado', 'COMPLETADA')
             ->sum('total');
 
         $totalProductos = DB::table('productos')->count();

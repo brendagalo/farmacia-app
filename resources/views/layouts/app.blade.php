@@ -14,6 +14,9 @@
     <!-- Bootstrap Icons -->
     <link rel="stylesheet"
           href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+          
+        <link rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 </head>
 
         <script>
@@ -74,6 +77,22 @@
             </li>
             @endif
 
+             <!-- Compras -->
+            @if(auth()->user()->rol->nombre == 'ADMINISTRADOR')
+            <li class="nav-item">
+                <a class="nav-link text-white {{ request()->routeIs('compras.*') ? 'fw-bold bg-secondary rounded' : '' }}"
+                   href="{{ route('compras.index') }}">
+                    <i class="bi bi-box-seam"></i>
+                    Compras
+                </a>
+            </li>
+            @endif
+
+           <hr>
+           <h1></h1>
+
+           
+
             <!-- Usuarios -->
             @if(auth()->user()->rol->nombre == 'ADMINISTRADOR')
                 <li class="nav-item">
@@ -85,6 +104,19 @@
                 </li>
             @endif
 
+            <!-- Clientes -->
+            <li class="nav-item">
+                <a class="nav-link text-white {{ request()->routeIs('clientes.*') ? 'fw-bold bg-secondary rounded' : '' }}"
+                   href="{{ route('clientes.index') }}">
+                    <i class="bi bi-people"></i>
+                    Clientes
+                </a>
+            </li>
+
+            <hr>
+            <h1></h1>
+
+            <!-- Venta -->
             <li class="nav-item">
                 <a href="{{ route('ventas.index') }}"
                 class="nav-link text-white {{ request()->routeIs('ventas.*') ? 'bg-secondary rounded' : '' }}">
@@ -94,14 +126,16 @@
                 </a>
             </li>
 
-            <!-- Clientes -->
             <li class="nav-item">
-                <a class="nav-link text-white {{ request()->routeIs('clientes.*') ? 'fw-bold bg-secondary rounded' : '' }}"
-                   href="{{ route('clientes.index') }}">
-                    <i class="bi bi-people"></i>
-                    Clientes
+                <a href="{{ route('caja.index') }}"
+                class="nav-link text-white {{ request()->routeIs('caja.*') ? 'bg-secondary rounded' : '' }}">
+
+                     <i class="fas fa-cash-register"></i>
+                    Caja
                 </a>
             </li>
+
+            
 
         </ul>
 

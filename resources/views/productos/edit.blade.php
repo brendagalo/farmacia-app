@@ -96,6 +96,7 @@
                     name="precio_compra"
                     class="form-control"
                     step="0.01"
+                    min="0"
                     value="{{ $producto->precio_compra }}" required> 
             </div>
 
@@ -106,6 +107,7 @@
                     name="precio_venta"
                     class="form-control"
                     step="0.01"
+                    min="0"
                     value="{{ $producto->precio_venta }}" required>
             </div>
 

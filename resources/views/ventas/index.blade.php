@@ -162,8 +162,13 @@
                 <input type="hidden" name="productos" id="productosInput">
                 <input type="hidden" name="total" id="totalInput">
 
-                <button type="submit" class="btn btn-success w-100">
+                <button
+                    type="submit"
+                    class="btn btn-success w-100"
+                    onclick="return validarVenta()">
+
                     Finalizar Venta
+
                 </button>
             </form>
 
@@ -248,7 +253,7 @@ function render(){
                     <button class="btn btn-sm btn-secondary" onclick="changeQty(${p.id}, 1)">+</button>
                 </div>
 
-                <span>S/ ${subtotal.toFixed(2)}</span>
+                <span>C$ ${subtotal.toFixed(2)}</span>
 
             </div>
         </li>
@@ -344,6 +349,20 @@ document.getElementById('pago').addEventListener('keyup', function(){
 
 });
 
+
+function validarVenta(){
+
+    if(carrito.length===0){
+
+        alert("Debe agregar productos.");
+
+        return false;
+
+    }
+
+    return true;
+
+}
 </script>
 ``
 
