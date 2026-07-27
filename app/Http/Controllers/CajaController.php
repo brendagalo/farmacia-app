@@ -11,9 +11,18 @@ class CajaController extends Controller
 
     public function index()
     {
+            /* Buscar primero una caja ABIERTA; si no existe, mostrar la última caja registrada */
             $caja = DB::table('caja')
                 ->where('estado', 'ABIERTA')
                 ->first();
+
+            if (!$caja) {
+                $caja = DB::table('caja')
+                    ->orderByDesc('id_caja')
+                    ->first();
+            }
+
+            $abierta = $caja && $caja->estado === 'ABIERTA';
 
             $ventasHoy = 0;
             $ingresos = 0;
@@ -39,6 +48,7 @@ class CajaController extends Controller
 
             return view('caja.index', compact(
                 'caja',
+                'abierta',
                 'ventasHoy',
                 'ingresos',
                 'egresos'
@@ -208,12 +218,39 @@ class CajaController extends Controller
     public function movimientos()
     {
         $movimientos = DB::table('movimientos_caja')
-            ->leftJoin('usuarios', 'movimientos_caja.id_usuario', '=', 'usuarios.id_usuario')
-            ->select(
-                'movimientos_caja.*',
-                'usuarios.nombre_completo'
+
+            ->leftJoin(
+                'usuarios',
+                'movimientos_caja.id_usuario',
+                '=',
+                'usuarios.id_usuario'
             )
-            ->orderBy('creado_en', 'desc')
+
+            ->leftJoin(
+                'ventas',
+                'movimientos_caja.id_venta',
+                '=',
+                'ventas.id_venta'
+            )
+
+            ->select(
+
+                'movimientos_caja.*',
+
+                'usuarios.nombre_completo',
+
+                'ventas.numero_ticket',
+
+                'ventas.cliente_nombre',
+
+                'ventas.metodo_pago',
+
+                'ventas.estado as estado_venta'
+
+            )
+
+            ->orderByDesc('movimientos_caja.creado_en')
+
             ->get();
 
         return view('caja.movimientos', compact('movimientos'));
@@ -231,26 +268,89 @@ class CajaController extends Controller
 
         }
 
-        return view('caja.arqueo',compact('caja'));
+            $ventas = DB::table('ventas')
+                ->where('estado', 'COMPLETADA')
+                ->whereDate('fecha_venta', today())
+                ->sum('total');
+
+            $ingresos = DB::table('movimientos_caja')
+                ->where('id_caja', $caja->id_caja)
+                ->where('tipo_movimiento', 'INGRESO')
+                ->whereNull('id_venta') // solo ingresos manuales
+                ->sum('monto');
+
+            $egresos = DB::table('movimientos_caja')
+                ->where('id_caja', $caja->id_caja)
+                ->where('tipo_movimiento', 'EGRESO')
+                ->sum('monto');
+
+            $saldoEsperado =
+                $caja->saldo_inicial +
+                $ventas +
+                $ingresos -
+                $egresos;
+
+            return view('caja.arqueo', compact(
+                'caja',
+                'ventas',
+                'ingresos',
+                'egresos',
+                'saldoEsperado'
+            ));
     }
 
     public function guardarArqueo(Request $request)
     {
         $request->validate([
-            'saldo_contado'=>'required|numeric|min:0'
+            'saldo_contado' => 'required|numeric|min:0'
         ]);
 
-        $caja = Caja::where('estado','ABIERTA')->first();
+        $caja = Caja::where('estado', 'ABIERTA')->first();
 
-        $diferencia = $request->saldo_contado - $caja->saldo_final;
+        if (!$caja) {
+            return redirect()
+                ->route('caja.index')
+                ->with('error', 'No existe una caja abierta.');
+        }
 
-        return view('caja.resultado_arqueo',[
-            'caja'=>$caja,
-            'contado'=>$request->saldo_contado,
-            'diferencia'=>$diferencia
+        // Ventas del día
+        $ventas = DB::table('ventas')
+            ->where('estado', 'COMPLETADA')
+            ->whereDate('fecha_venta', today())
+            ->sum('total');
+
+        // Ingresos manuales
+        $ingresos = DB::table('movimientos_caja')
+            ->where('id_caja', $caja->id_caja)
+            ->where('tipo_movimiento', 'INGRESO')
+            ->whereNull('id_venta')
+            ->sum('monto');
+
+        // Egresos
+        $egresos = DB::table('movimientos_caja')
+            ->where('id_caja', $caja->id_caja)
+            ->where('tipo_movimiento', 'EGRESO')
+            ->sum('monto');
+
+        // Saldo esperado
+        $saldoEsperado =
+            $caja->saldo_inicial +
+            $ventas +
+            $ingresos -
+            $egresos;
+
+        $diferencia = $request->saldo_contado - $saldoEsperado;
+
+        return view('caja.resultado_arqueo', [
+            'caja' => $caja,
+            'contado' => $request->saldo_contado,
+            'ventas' => $ventas,
+            'ingresos' => $ingresos,
+            'egresos' => $egresos,
+            'saldoEsperado' => $saldoEsperado,
+            'diferencia' => $diferencia
         ]);
     }
-
     public function cerrarCaja(Request $request)
     {
         $request->validate([
@@ -267,19 +367,34 @@ class CajaController extends Controller
 
         }
 
-        $saldoEsperado = $caja->saldo_final;
+        // Total de ventas del día
+        $ventas = DB::table('ventas')
+            ->where('estado', 'COMPLETADA')
+            ->whereDate('fecha_venta', today())
+            ->sum('total');
 
-        $diferencia = $request->saldo_contado - $saldoEsperado;
-
+        // Ingresos manuales
         $ingresos = DB::table('movimientos_caja')
-                ->where('id_caja',$caja->id_caja)
-                ->where('tipo_movimiento','INGRESO')
-                ->sum('monto');
+            ->where('id_caja', $caja->id_caja)
+            ->where('tipo_movimiento', 'INGRESO')
+            ->whereNull('id_venta')
+            ->sum('monto');
 
+        // Egresos
         $egresos = DB::table('movimientos_caja')
-                ->where('id_caja',$caja->id_caja)
-                ->where('tipo_movimiento','EGRESO')
-                ->sum('monto');
+            ->where('id_caja', $caja->id_caja)
+            ->where('tipo_movimiento', 'EGRESO')
+            ->sum('monto');
+
+        // Saldo esperado
+        $saldoEsperado =
+            $caja->saldo_inicial +
+            $ventas +
+            $ingresos -
+            $egresos;
+
+        // Diferencia
+        $diferencia = $request->saldo_contado - $saldoEsperado;
 
         $caja->update([
 
@@ -290,6 +405,8 @@ class CajaController extends Controller
             'id_usuario_cierre' => auth()->user()->id_usuario,
 
             'saldo_final' => $request->saldo_contado,
+
+            'saldo_contado' => $request->saldo_contado,
 
             'total_ingresos' => $ingresos,
 

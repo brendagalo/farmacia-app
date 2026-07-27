@@ -121,6 +121,16 @@
                 Total: C$ <span id="total">0</span>
             </h3>
 
+            <div
+                id="totalDolares"
+                class="alert alert-info py-2 mt-2"
+                style="display:none;">
+
+                <strong>Equivale a:</strong>
+                <span id="usdTotal">US$ 0.00</span>
+
+            </div>
+
            <form action="{{ route('ventas.procesar') }}" method="POST">
                 @csrf
 
@@ -136,7 +146,7 @@
 
                     <div class="mb-2">
                         <label>Método de Pago</label>
-                        <select name="metodo_pago" class="form-control">
+                        <select name="metodo_pago" id="metodo_pago" class="form-control">
                             <option value="EFECTIVO">Efectivo</option>
                             <option value="TARJETA">Tarjeta</option>
                             <option value="TRANSFERENCIA">Transferencia</option>
@@ -149,15 +159,22 @@
                         <textarea name="observaciones" class="form-control"></textarea>
                     </div>
 
-                    <div class="mb-2">
+                    <div class="mb-2" id="divPago">
                         <label>Paga con</label>
-                        <input type="number" name="monto_pagado" id="pago" class="form-control">
+                        <input type="number"
+                            name="monto_pagado"
+                            id="pago"
+                            class="form-control">
                     </div>
 
-                    <div class="mb-2">
+                    <div class="mb-2" id="divCambio">
                         <label>Cambio</label>
-                        <input type="text" name="cambio" id="cambio" class="form-control" readonly>
-                    </div>
+                        <input type="text"
+                            name="cambio"
+                            id="cambio"
+                            class="form-control"
+                            readonly>
+</div>
 
                 <input type="hidden" name="productos" id="productosInput">
                 <input type="hidden" name="total" id="totalInput">
@@ -181,9 +198,31 @@
 
 <script>
 
+function actualizarMetodoPago(){
+
+    let metodo = document.getElementById("metodo_pago").value;
+
+    if(metodo == "TARJETA" || metodo == "TRANSFERENCIA"){
+
+        document.getElementById("divPago").style.display = "none";
+        document.getElementById("divCambio").style.display = "none";
+
+    }else{
+
+        document.getElementById("divPago").style.display = "block";
+        document.getElementById("divCambio").style.display = "block";
+
+    }
+
+    render();
+}
+
+const tipoCambio = {{ $caja->tipo_cambio }};
+
 let carrito = [];
 
 function add(id, nombre, precio, stock){
+    
 
     let item = carrito.find(p => p.id === id);
 
@@ -265,6 +304,24 @@ function render(){
 
     document.getElementById('totalInput').value = total;
     document.getElementById('productosInput').value = JSON.stringify(carrito);
+
+    // Mostrar equivalente en dólares
+    let metodo = document.getElementById("metodo_pago").value;
+
+    if(metodo === "DOLARES"){
+
+        document.getElementById("totalDolares").style.display = "block";
+
+        let totalUSD = total / tipoCambio;
+
+        document.getElementById("usdTotal").innerText =
+            "US$ " + totalUSD.toFixed(2);
+
+    }else{
+
+        document.getElementById("totalDolares").style.display = "none";
+
+    }
 }
 
 // ✅ BUSCADOR
@@ -338,18 +395,46 @@ document.addEventListener("DOMContentLoaded", function(){
 
 <script>
 
-document.getElementById('pago').addEventListener('keyup', function(){
+function calcularCambio(){
 
-    let pago = parseFloat(this.value) || 0;
-    let total = parseFloat(document.getElementById('total').innerText) || 0;
+    let pago = parseFloat(document.getElementById("pago").value) || 0;
 
-    let cambio = pago - total;
+    let total = parseFloat(document.getElementById("total").innerText) || 0;
 
-    document.getElementById('cambio').value = cambio >= 0 ? cambio.toFixed(2) : 0;
+    let metodo = document.getElementById("metodo_pago").value;
+
+    let cambio = 0;
+
+    if(metodo === "DOLARES"){
+
+        // El cliente escribe dólares
+        let pagoCordobas = pago * tipoCambio;
+
+        cambio = pagoCordobas - total;
+
+    }else{
+
+        // El cliente escribe córdobas
+        cambio = pago - total;
+
+    }
+
+    document.getElementById("cambio").value =
+        cambio >= 0 ? cambio.toFixed(2) : "0.00";
+
+}
+document.getElementById("pago")
+    .addEventListener("keyup", calcularCambio);
+
+document.getElementById("metodo_pago")
+.addEventListener("change", function(){
+
+    actualizarMetodoPago();
+
+    calcularCambio();
 
 });
-
-
+actualizarMetodoPago();
 function validarVenta(){
 
     if(carrito.length===0){

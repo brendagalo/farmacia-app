@@ -114,6 +114,26 @@ class VentaController extends Controller
 
             DB::commit();
 
+            // Obtener el movimiento de caja de esa venta
+            $movimiento = DB::table('movimientos_caja')
+                ->where('id_venta', $id)
+                ->first();
+
+            if ($movimiento) {
+
+                // Restar el monto de la caja
+                DB::table('caja')
+                    ->where('id_caja', $movimiento->id_caja)
+                    ->decrement('saldo_final', $movimiento->monto);
+
+                // Marcar el movimiento como anulado
+                DB::table('movimientos_caja')
+                    ->where('id_movimiento', $movimiento->id_movimiento)
+                    ->update([
+                        'descripcion' => 'VENTA ANULADA',
+                        'monto' => 0
+                    ]);
+            }
             return redirect()
                 ->route('ventas.historial')
                 ->with(
@@ -137,16 +157,73 @@ class VentaController extends Controller
     // ✅ Procesar venta
     public function procesar(Request $request)
     {
-        if ($request->monto_pagado <= 0) {
-            return back()->with('error', 'Debe ingresar monto pagado');
-            }
 
-            if ($request->monto_pagado < $request->total) {
-                return back()->with('error', 'El monto pagado es insuficiente');
-            }
+                $montoPagado = 0;
+        if(
+            $request->metodo_pago == 'TARJETA' ||
+            $request->metodo_pago == 'TRANSFERENCIA'
+        ){
+            $montoPagado = $request->total;
+        }
+        // EFECTIVO
+        if ($request->metodo_pago == 'EFECTIVO') {
+
+            $montoPagado = $request->monto_pagado;
+
+        }
+
+        // DÓLARES
+        elseif ($request->metodo_pago == 'DOLARES') {
+
+            $tipoCambio = DB::table('caja')
+                ->where('estado', 'ABIERTA')
+                ->value('tipo_cambio');
+
+            $montoPagado = $request->monto_pagado * $tipoCambio;
+
+        }
+
+        // TARJETA Y TRANSFERENCIA
+        else {
+
+            // Se asume que paga exactamente el total
+            $montoPagado = $request->total;
+
+        }
+
+        if ($montoPagado <= 0) {
+            return back()->with('error', 'Debe ingresar un monto válido.');
+        }
+
+        if ($montoPagado < $request->total) {
+            return back()->with('error', 'El monto pagado es insuficiente.');
+        }
+
+        \Log::info([
+            'montoPagado' => $montoPagado,
+            'total' => $request->total,
+        ]);
+
         DB::beginTransaction();
 
         try {
+
+            //  Convertir JSON a array
+            $productos = json_decode($request->productos, true);
+
+            foreach ($productos as $item) {
+
+                $producto = DB::table('productos')
+                    ->where('id_producto', $item['id'])
+                    ->first();
+
+                if (!$producto) {
+                    throw new \Exception("Producto no encontrado.");
+                }
+                if ($producto->stock_actual < $item['cantidad']) {
+                    throw new \Exception("Stock insuficiente para {$producto->nombre}");
+                }
+            }
 
             //  Generar ticket
             $ticket = 'TICKET-' . time();
@@ -154,6 +231,7 @@ class VentaController extends Controller
             //  Calcular valores
             $subtotal = $request->total / 1.18;
             $igv = $request->total - $subtotal;
+            $cambio = $montoPagado - $request->total;
 
             //  Insertar venta completa
             $ventaId = DB::table('ventas')->insertGetId([
@@ -166,8 +244,8 @@ class VentaController extends Controller
                 'total' => $request->total,
 
                 'metodo_pago' => $request->metodo_pago ?? 'EFECTIVO',
-                'monto_pagado' => $request->monto_pagado ?? 0,
-                'cambio' => $request->cambio ?? 0,
+                'monto_pagado' => $montoPagado,
+                'cambio' => $cambio,
 
                 'cliente_nombre' => $request->cliente_nombre,
                 'cliente_dni' => $request->cliente_dni,
@@ -177,19 +255,7 @@ class VentaController extends Controller
             ]);
 
 
-            //  Convertir JSON a array
-            $productos = json_decode($request->productos, true);
-
-            foreach ($productos as $item) {
-
-                $producto = DB::table('productos')
-                    ->where('id_producto', $item['id'])
-                    ->first();
-
-                if ($producto->stock_actual < $item['cantidad']) {
-                    throw new \Exception("Stock insuficiente para {$producto->nombre}");
-                }
-            }
+            
 
             foreach ($productos as $item) {
 
@@ -206,6 +272,54 @@ class VentaController extends Controller
                 DB::table('productos')
                     ->where('id_producto', $item['id'])
                     ->decrement('stock_actual', $item['cantidad']);
+            }
+
+            // Registrar movimiento de caja por la venta
+            $caja = DB::table('caja')
+                ->where('estado', 'ABIERTA')
+                ->first();
+    //dd($caja);
+            if ($caja) {
+
+                $saldoAnterior = $caja->saldo_final;
+
+                $saldoActual = $saldoAnterior + $request->total;
+
+                DB::table('movimientos_caja')->insert([
+
+                    'id_caja' => $caja->id_caja,
+
+                    'id_venta' => $ventaId,
+
+                    'id_compra' => null,
+
+                    'tipo_movimiento' => 'INGRESO',
+
+                    'forma_pago' => $request->metodo_pago,
+
+                    'monto' => $request->total,
+
+                    'descripcion' => 'Venta ' . $ticket,
+
+                    'motivo' => 'Venta',
+
+                    'saldo_anterior' => $saldoAnterior,
+
+                    'saldo_actual' => $saldoActual,
+
+                    'id_usuario' => auth()->user()->id_usuario,
+
+                    'creado_en' => now()
+
+                ]);
+
+                DB::table('caja')
+                    ->where('id_caja', $caja->id_caja)
+                    ->update([
+
+                        'saldo_final' => $saldoActual
+
+                    ]);
             }
 
             //  Auditoría
@@ -230,7 +344,8 @@ class VentaController extends Controller
 
             DB::rollback();
 
-            dd($e->getMessage());
+            //dd($e->getMessage());
+            return back()->with('error', $e->getMessage());
 
         }
     }

@@ -19,21 +19,17 @@
                     <tr>
 
                         <th>Fecha</th>
-
                         <th>Tipo</th>
-
+                        <th>Ticket</th>
+                        <th>Cliente</th>
+                        <th>Método de Pago</th>
                         <th>Monto</th>
-
                         <th>Motivo</th>
-
                         <th>Descripción</th>
-
                         <th>Usuario</th>
-
                         <th>Saldo Anterior</th>
-
                         <th>Saldo Actual</th>
-
+                    
                     </tr>
 
                 </thead>
@@ -48,11 +44,19 @@
 
                         <td>
 
-                            @if($m->tipo_movimiento=='INGRESO')
+                            @if($m->id_venta)
+
+                                <span class="badge bg-primary">
+
+                                    🛒 VENTA
+
+                                </span>
+
+                            @elseif($m->tipo_movimiento=='INGRESO')
 
                                 <span class="badge bg-success">
 
-                                    INGRESO
+                                    ➕ INGRESO
 
                                 </span>
 
@@ -60,14 +64,28 @@
 
                                 <span class="badge bg-danger">
 
-                                    EGRESO
+                                    ➖ EGRESO
 
                                 </span>
 
                             @endif
 
                         </td>
+                        <td>
 
+                            {{ $m->numero_ticket ?? '-' }}
+
+                        </td>
+
+                        <td>
+
+                            {{ $m->cliente_nombre ?? '-' }}
+
+                        </td>
+
+                        <td>
+                            {{ $m->metodo_pago ?? $m->forma_pago }}
+                        </td>
                         <td>
 
                             C$
@@ -101,7 +119,7 @@
 
                     <tr>
 
-                        <td colspan="8" class="text-center">
+                        <td colspan="11" class="text-center">
 
                             No existen movimientos registrados.
 

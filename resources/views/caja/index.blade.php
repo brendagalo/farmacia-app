@@ -28,11 +28,11 @@
 
                     <h6>Estado</h6>
 
-                    <span class="badge bg-success fs-6">
-
-                        ABIERTA
-
-                    </span>
+                    @if($abierta)
+                        <span class="badge bg-success fs-6">ABIERTA</span>
+                    @else
+                        <span class="badge bg-danger fs-6">CERRADA</span>
+                    @endif
 
                 </div>
 
@@ -159,27 +159,29 @@
     <div class="row mt-4">
 
         <div class="col-md-2">
-
-            <a href="{{ route('caja.ingreso') }}"
+            @if($abierta)
+                <a href="{{ route('caja.ingreso') }}"
                 class="btn btn-success w-100">
-
-                    ➕<br>
-                    Nuevo Ingreso
-
-            </a>
-
+                    ➕<br>Nuevo Ingreso
+                </a>
+            @else
+                <button class="btn btn-success w-100" disabled>
+                    ➕<br>Nuevo Ingreso
+                </button>
+            @endif
         </div>
 
         <div class="col-md-2">
-
-            <a href="{{ route('caja.egreso') }}"
+            @if($abierta)
+                <a href="{{ route('caja.egreso') }}"
                 class="btn btn-danger w-100">
-
-                ➖<br>
-                Nuevo Egreso
-
-            </a>
-
+                    ➖<br>Nuevo Egreso
+                </a>
+            @else
+                <button class="btn btn-danger w-100" disabled>
+                    ➖<br>Nuevo Egreso
+                </button>
+            @endif
         </div>
 
         <div class="col-md-2">
@@ -195,30 +197,70 @@
         </div>
 
         <div class="col-md-2">
-
-            <a href="{{ route('caja.arqueo') }}"
+            @if($abierta)
+                <a href="{{ route('caja.arqueo') }}"
                 class="btn btn-warning w-100">
-
-                💵<br>
-                Arqueo
-
-            </a>
-
+                    💵<br>Arqueo
+                </a>
+            @else
+                <a href="{{ route('caja.index') }}#abrirCaja"
+                class="btn btn-primary w-100">
+                    🔓<br>Abrir Caja
+                </a>
+            @endif
         </div>
 
-        <div class="col-md-2">
-            
-            <a href="#"
-               class="btn btn-dark w-100">
-                
-                🔒<br>
-                Cerrar Caja
-
-            </a>
-
-        </div>
+       
 
     </div>
+
+        @if(!$abierta)
+            <div class="card shadow mt-4" id="abrirCaja">
+                <div class="card-header bg-warning">
+                    Abrir Nueva Caja
+                </div>
+
+                <div class="card-body">
+                    <form action="{{ route('caja.abrir') }}" method="POST">
+                        @csrf
+
+                        <div class="row">
+                            <div class="col-md-4 mb-3">
+                                <label>Saldo Inicial</label>
+                                <input type="number"
+                                    step="0.01"
+                                    min="0"
+                                    name="saldo_inicial"
+                                    class="form-control"
+                                    required>
+                            </div>
+
+                            <div class="col-md-4 mb-3">
+                                <label>Tipo de Cambio</label>
+                                <input type="number"
+                                    step="0.0001"
+                                    min="0"
+                                    name="tipo_cambio"
+                                    class="form-control"
+                                    value="36.62"
+                                    required>
+                            </div>
+
+                            <div class="col-md-4 mb-3">
+                                <label>Observaciones</label>
+                                <input type="text"
+                                    name="observaciones"
+                                    class="form-control">
+                            </div>
+                        </div>
+
+                        <button class="btn btn-primary">
+                            Abrir Caja
+                        </button>
+                    </form>
+                </div>
+            </div>
+        @endif
 
     @else
 

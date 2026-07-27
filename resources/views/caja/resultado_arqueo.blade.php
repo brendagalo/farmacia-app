@@ -16,9 +16,33 @@
 
             <table class="table table-bordered">
 
+               <tr>
+                    <th>Saldo Inicial</th>
+                    <td>C$ {{ number_format($caja->saldo_inicial,2) }}</td>
+                </tr>
+
                 <tr>
-                    <th>Saldo esperado</th>
-                    <td>C$ {{ number_format($caja->saldo_final,2) }}</td>
+                    <th>Ventas del día</th>
+                    <td>C$ {{ number_format($ventas,2) }}</td>
+                </tr>
+
+                <tr>
+                    <th>Ingresos</th>
+                    <td>C$ {{ number_format($ingresos,2) }}</td>
+                </tr>
+
+                <tr>
+                    <th>Egresos</th>
+                    <td>C$ {{ number_format($egresos,2) }}</td>
+                </tr>
+
+                <tr class="table-success">
+                    <th>Saldo Esperado</th>
+                    <td>
+                        <strong>
+                            C$ {{ number_format($saldoEsperado,2) }}
+                        </strong>
+                    </td>
                 </tr>
 
                 <tr>
