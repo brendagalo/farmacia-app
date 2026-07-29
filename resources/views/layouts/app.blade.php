@@ -14,7 +14,7 @@
     <!-- Bootstrap Icons -->
     <link rel="stylesheet"
           href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-          
+
         <link rel="stylesheet"
             href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 </head>
@@ -45,11 +45,11 @@
 
         <div class="text-center">
             <p class="mb-0 fw-bold">
-                {{ auth()->user()->nombre_completo }}
+                {{ optional(auth()->user())->nombre_completo }}
             </p>
 
             <small class="text-secondary">
-                {{ auth()->user()->rol->nombre }}
+                {{ optional(optional(auth()->user())->rol)->nombre }}
             </small>
         </div>
 
@@ -77,6 +77,17 @@
             </li>
             @endif
 
+            <!-- Categorías -->
+            @if(auth()->user()->rol->nombre == 'ADMINISTRADOR')
+            <li class="nav-item">
+                <a class="nav-link text-white {{ request()->routeIs('categorias.*') ? 'fw-bold bg-secondary rounded' : '' }}"
+                   href="{{ route('categorias.index') }}">
+                    <i class="bi bi-tags"></i>
+                    Categorías
+                </a>
+            </li>
+            @endif
+
              <!-- Compras -->
             @if(auth()->user()->rol->nombre == 'ADMINISTRADOR')
             <li class="nav-item">
@@ -88,10 +99,21 @@
             </li>
             @endif
 
+            <!-- Proveedores -->
+            @if(auth()->user()->rol->nombre == 'ADMINISTRADOR')
+            <li class="nav-item">
+                <a class="nav-link text-white {{ request()->routeIs('proveedores.*') ? 'fw-bold bg-secondary rounded' : '' }}"
+                   href="{{ route('proveedores.index') }}">
+                    <i class="bi bi-truck"></i>
+                    Proveedores
+                </a>
+            </li>
+            @endif
+
            <hr>
            <h1></h1>
 
-           
+
 
             <!-- Usuarios -->
             @if(auth()->user()->rol->nombre == 'ADMINISTRADOR')
@@ -135,7 +157,13 @@
                 </a>
             </li>
 
-            
+            <li class="nav-item">
+                <a href="{{ route('backups.index') }}"
+                class="nav-link text-white {{ request()->routeIs('backups.*') ? 'bg-secondary rounded' : '' }}">
+                    <i class="bi bi-shield-check"></i>
+                    Backups
+                </a>
+            </li>
 
         </ul>
 

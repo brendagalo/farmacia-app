@@ -20,8 +20,8 @@ class ProductoController extends Controller
 
     public function create()
     {
-        $categorias = Categoria::all();
-        $proveedores = Proveedor::all();
+        $categorias = Categoria::where('activo', true)->orderBy('nombre')->get();
+        $proveedores = Proveedor::where('activo', true)->orderBy('nombre')->get();
 
         return view('productos.create', compact(
             'categorias',
@@ -58,8 +58,8 @@ class ProductoController extends Controller
    {
         $producto = Producto::findOrFail($id);
 
-        $categorias = Categoria::all();
-        $proveedores = Proveedor::all();
+        $categorias = Categoria::where('activo', true)->orderBy('nombre')->get();
+        $proveedores = Proveedor::where('activo', true)->orderBy('nombre')->get();
 
         return view('productos.edit', compact(
             'producto',

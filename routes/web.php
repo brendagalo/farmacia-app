@@ -10,6 +10,9 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\VentaController;
 use App\Http\Controllers\CajaController;
 use App\Http\Controllers\CompraController;
+use App\Http\Controllers\BackupController;
+use App\Http\Controllers\ProveedorController;
+use App\Http\Controllers\CategoriaController;
 
 Route::resource('productos', ProductoController::class)
     ->middleware(['auth']);
@@ -85,6 +88,16 @@ Route::middleware('auth')->group(function () {
 Route::resource('compras', CompraController::class);
 Route::post('/compras/{id}/aprobar', [CompraController::class, 'aprobar'])->name('compras.aprobar');
 
+Route::resource('proveedores', ProveedorController::class)
+    ->parameters(['proveedores' => 'proveedor'])
+    ->except('show')
+    ->middleware('auth');
+
+Route::resource('categorias', CategoriaController::class)
+    ->parameters(['categorias' => 'categoria'])
+    ->except('show')
+    ->middleware('auth');
+
 //Caja
     Route::get('/caja/ingreso', [CajaController::class,'ingreso'])
         ->name('caja.ingreso');
@@ -105,6 +118,20 @@ Route::post('/compras/{id}/aprobar', [CompraController::class, 'aprobar'])->name
 
     Route::post('/caja/arqueo', [CajaController::class,'guardarArqueo'])
         ->name('caja.arqueo.guardar');
-    
+
     Route::post('/caja/cerrar', [CajaController::class, 'cerrarCaja'])
         ->name('caja.cerrar');
+
+    Route::middleware('auth')->group(function () {
+        Route::get('/backups', [BackupController::class, 'index'])
+            ->name('backups.index');
+
+        Route::post('/backups/create', [BackupController::class, 'create'])
+            ->name('backups.create');
+
+        Route::post('/backups/restore', [BackupController::class, 'restore'])
+            ->name('backups.restore');
+
+        Route::get('/backups/download/{file}', [BackupController::class, 'download'])
+            ->name('backups.download');
+    });
