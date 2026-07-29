@@ -3,17 +3,6 @@
 @section('content')
 
 @if(session('success'))
-<<<<<<< HEAD
-<div class="alert alert-success">
-    {{ session('success') }}
-</div>
-@endif
-
-@if(session('error'))
-<div class="alert alert-danger">
-    {{ session('error') }}
-</div>
-=======
     <div class="alert alert-success">
         {{ session('success') }}
     </div>
@@ -23,67 +12,10 @@
     <div class="alert alert-danger">
         {{ session('error') }}
     </div>
->>>>>>> mejora-caja
 @endif
 
 <h3>Ventas</h3>
 
-<<<<<<< HEAD
-<div class="row">
-
-<!-- PRODUCTOS -->
-<div class="col-md-8">
-
-<input type="text" id="buscar" class="form-control mb-3" placeholder="Buscar producto...">
-
-    <div class="card">
-        <div class="card-header">Productos</div>
-
-        <div class="card-body">
-
-            <div class="row">
-                @foreach($productos as $p)
-                <div class="col-md-4 mb-3 producto-item">
-<!---
-                    <div class="card p-2">
-                        <h6>{{ $p->nombre }}</h6>
-                        <p>S/ {{ $p->precio_venta }}</p>
-
-                        <button class="btn btn-primary btn-sm"
-                            onclick="add({{ $p->id_producto }}, '{{ $p->nombre }}', {{ $p->precio_venta }}, {{ $p->stock_actual }})">
-                            Agregar
-                        </button>
-                    </div>
--->
-
-
-<div class="card p-2">
-
-    <div class="d-flex justify-content-between align-items-center">
-
-        <div>
-            <h6 class="mb-1">{{ $p->nombre }}</h6>
-            <small class="text-muted">S/ {{ number_format($p->precio_venta, 2) }}</small>
-        </div>
-
-        <!-- ✅ STOCK (ZONA VERDE QUE MARCASTE) -->
-        <div class="text-end">
-            <span class="badge
-                {{ $p->stock_actual <= 10 ? 'bg-danger' : ($p->stock_actual <= 20 ? 'bg-warning text-dark' : 'bg-success') }}">
-
-                Stock: {{ $p->stock_actual }}
-            </span>
-        </div>
-
-    </div>
-
-    <button class="btn btn-primary btn-sm mt-2 w-100"
-        onclick="add({{ $p->id_producto }}, '{{ $p->nombre }}', {{ $p->precio_venta }}, {{ $p->stock_actual }})">
-        Agregar
-    </button>
-
-</div>
-=======
     <div class="mb-3">
 
         <a href="{{ route('ventas.historial') }}"
@@ -164,7 +96,6 @@
             </button>
 
         </div>
->>>>>>> mejora-caja
 
 
                 </div>
@@ -187,11 +118,6 @@
             <ul id="carrito" class="list-group mb-3"></ul>
 
             <h3 class="text-success fw-bold">
-<<<<<<< HEAD
-                Total: S/ <span id="total">0</span>
-            </h3>
-
-=======
                 Total: C$ <span id="total">0</span>
             </h3>
 
@@ -205,7 +131,6 @@
 
             </div>
 
->>>>>>> mejora-caja
            <form action="{{ route('ventas.procesar') }}" method="POST">
                 @csrf
 
@@ -221,20 +146,11 @@
 
                     <div class="mb-2">
                         <label>Método de Pago</label>
-<<<<<<< HEAD
-                        <select name="metodo_pago" class="form-control">
-                            <option value="EFECTIVO">Efectivo</option>
-                            <option value="TARJETA">Tarjeta</option>
-                            <option value="TRANSFERENCIA">Transferencia</option>
-                            <option value="YAPE">Yape</option>
-                            <option value="PLIN">Plin</option>
-=======
                         <select name="metodo_pago" id="metodo_pago" class="form-control">
                             <option value="EFECTIVO">Efectivo</option>
                             <option value="TARJETA">Tarjeta</option>
                             <option value="TRANSFERENCIA">Transferencia</option>
                             <option value="DOLARES">Dólares</option>
->>>>>>> mejora-caja
                         </select>
                     </div>
 
@@ -243,17 +159,6 @@
                         <textarea name="observaciones" class="form-control"></textarea>
                     </div>
 
-<<<<<<< HEAD
-                    <div class="mb-2">
-                        <label>Paga con</label>
-                        <input type="number" name="monto_pagado" id="pago" class="form-control">
-                    </div>
-
-                    <div class="mb-2">
-                        <label>Cambio</label>
-                        <input type="text" name="cambio" id="cambio" class="form-control" readonly>
-                    </div>
-=======
                     <div class="mb-2" id="divPago">
                         <label>Paga con</label>
                         <input type="number"
@@ -270,15 +175,10 @@
                             class="form-control"
                             readonly>
 </div>
->>>>>>> mejora-caja
 
                 <input type="hidden" name="productos" id="productosInput">
                 <input type="hidden" name="total" id="totalInput">
 
-<<<<<<< HEAD
-                <button type="submit" class="btn btn-success w-100">
-                    Finalizar Venta
-=======
                 <button
                     type="submit"
                     class="btn btn-success w-100"
@@ -286,7 +186,6 @@
 
                     Finalizar Venta
 
->>>>>>> mejora-caja
                 </button>
             </form>
 
@@ -299,11 +198,6 @@
 
 <script>
 
-<<<<<<< HEAD
-let carrito = [];
-
-function add(id, nombre, precio, stock){
-=======
 function actualizarMetodoPago(){
 
     let metodo = document.getElementById("metodo_pago").value;
@@ -329,7 +223,6 @@ let carrito = [];
 
 function add(id, nombre, precio, stock){
     
->>>>>>> mejora-caja
 
     let item = carrito.find(p => p.id === id);
 
@@ -399,11 +292,7 @@ function render(){
                     <button class="btn btn-sm btn-secondary" onclick="changeQty(${p.id}, 1)">+</button>
                 </div>
 
-<<<<<<< HEAD
-                <span>S/ ${subtotal.toFixed(2)}</span>
-=======
                 <span>C$ ${subtotal.toFixed(2)}</span>
->>>>>>> mejora-caja
 
             </div>
         </li>
@@ -415,29 +304,6 @@ function render(){
 
     document.getElementById('totalInput').value = total;
     document.getElementById('productosInput').value = JSON.stringify(carrito);
-<<<<<<< HEAD
-}
-
-// ✅ BUSCADOR
-document.getElementById('buscar').addEventListener('keyup', function(){
-
-    let filtro = this.value.toLowerCase();
-    let items = document.querySelectorAll('.producto-item');
-
-    items.forEach(item => {
-        let nombre = item.innerText.toLowerCase();
-        item.style.display = nombre.includes(filtro) ? '' : 'none';
-    });
-
-});
-
-</script>
-
-
-
-<script>
-
-=======
 
     // Mostrar equivalente en dólares
     let metodo = document.getElementById("metodo_pago").value;
@@ -490,7 +356,6 @@ document.getElementById("buscar").addEventListener("keydown", function(e){
 
 });
 
->>>>>>> mejora-caja
 document.addEventListener("DOMContentLoaded", function(){
 
     console.log("JS cargado"); // prueba
@@ -505,10 +370,6 @@ document.addEventListener("DOMContentLoaded", function(){
             let items = document.querySelectorAll('.producto-item');
 
             items.forEach(item => {
-<<<<<<< HEAD
-                let nombre = item.innerText.toLowerCase();
-                item.style.display = nombre.includes(filtro) ? '' : 'none';
-=======
                 let nombre = item.dataset.nombre;
                 let codigo = item.dataset.codigo;
 
@@ -521,7 +382,6 @@ document.addEventListener("DOMContentLoaded", function(){
                 else{
                     item.style.display = 'none';
                     }
->>>>>>> mejora-caja
             });
 
         });
@@ -530,27 +390,11 @@ document.addEventListener("DOMContentLoaded", function(){
 
 });
 
-<<<<<<< HEAD
-=======
 
->>>>>>> mejora-caja
 </script>
 
 <script>
 
-<<<<<<< HEAD
-document.getElementById('pago').addEventListener('keyup', function(){
-
-    let pago = parseFloat(this.value) || 0;
-    let total = parseFloat(document.getElementById('total').innerText) || 0;
-
-    let cambio = pago - total;
-
-    document.getElementById('cambio').value = cambio >= 0 ? cambio.toFixed(2) : 0;
-
-});
-
-=======
 function calcularCambio(){
 
     let pago = parseFloat(document.getElementById("pago").value) || 0;
@@ -604,14 +448,8 @@ function validarVenta(){
     return true;
 
 }
->>>>>>> mejora-caja
 </script>
 ``
 
 
-<<<<<<< HEAD
 @endsection
-
-=======
-@endsection 
->>>>>>> mejora-caja

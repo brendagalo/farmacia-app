@@ -7,8 +7,4 @@ use Illuminate\Database\Eloquent\Model;
 class Ventas extends Model
 {
     //
-<<<<<<< HEAD
 }
-=======
-}
->>>>>>> mejora-caja

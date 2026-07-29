@@ -126,18 +126,6 @@
                 </li>
             @endif
 
-<<<<<<< HEAD
-            <li class="nav-item">
-                <a href="{{ route('ventas.index') }}"
-                class="nav-link text-white {{ request()->routeIs('ventas.*') ? 'bg-secondary rounded' : '' }}">
-
-                    <i class="bi bi-cart-check"></i>
-                    Ventas
-                </a>
-            </li>
-
-=======
->>>>>>> mejora-caja
             <!-- Clientes -->
             <li class="nav-item">
                 <a class="nav-link text-white {{ request()->routeIs('clientes.*') ? 'fw-bold bg-secondary rounded' : '' }}"

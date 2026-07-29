@@ -14,8 +14,6 @@ use App\Http\Controllers\BackupController;
 use App\Http\Controllers\ProveedorController;
 use App\Http\Controllers\CategoriaController;
 
-use App\Http\Controllers\VentaController;
-
 Route::resource('productos', ProductoController::class)
     ->middleware(['auth']);
 
@@ -56,10 +54,6 @@ Route::resource('usuarios', UsuarioController::class);
 
 Route::resource('productos', ProductoController::class);
 
-<<<<<<< HEAD
-
-=======
->>>>>>> mejora-caja
 Route::get('/ventas', [VentaController::class, 'index'])
     ->name('ventas.index')
     ->middleware('auth');
@@ -67,8 +61,6 @@ Route::get('/ventas', [VentaController::class, 'index'])
 Route::post('/ventas', [VentaController::class, 'procesar'])
     ->name('ventas.procesar')
     ->middleware('auth');
-<<<<<<< HEAD
-=======
 
 Route::get('/ventas/historial', [VentaController::class, 'historial'])
     ->name('ventas.historial')
@@ -143,4 +135,3 @@ Route::resource('categorias', CategoriaController::class)
         Route::get('/backups/download/{file}', [BackupController::class, 'download'])
             ->name('backups.download');
     });
->>>>>>> mejora-caja

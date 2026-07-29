@@ -6,19 +6,12 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Models\Producto;
 
-<<<<<<< HEAD
-=======
 
->>>>>>> mejora-caja
 class VentaController extends Controller
 {
     // ✅ Mostrar POS
     public function index()
     {
-<<<<<<< HEAD
-        $productos = Producto::where('activo', 1)->get();
-        return view('ventas.index', compact('productos'));
-=======
 
         $caja = DB::table('caja')
         ->where('estado', 'ABIERTA')
@@ -34,23 +27,10 @@ class VentaController extends Controller
         return view('ventas.index', compact('productos','caja' ));
 
 
->>>>>>> mejora-caja
     }
 
    // dd($request->all());
 
-<<<<<<< HEAD
-    // ✅ Procesar venta
-    public function procesar(Request $request)
-    {
-        if ($request->monto_pagado <= 0) {
-            return back()->with('error', 'Debe ingresar monto pagado');
-            }
-
-            if ($request->monto_pagado < $request->total) {
-                return back()->with('error', 'El monto pagado es insuficiente');
-            }
-=======
     public function historial(Request $request)
     {
         $query = DB::table('ventas');
@@ -107,21 +87,10 @@ class VentaController extends Controller
 
     public function anular($id)
     {
->>>>>>> mejora-caja
         DB::beginTransaction();
 
         try {
 
-<<<<<<< HEAD
-            // ✅ Generar ticket
-            $ticket = 'TICKET-' . time();
-
-            // ✅ Calcular valores
-            $subtotal = $request->total / 1.18;
-            $igv = $request->total - $subtotal;
-
-            // ✅ Insertar venta completa
-=======
             $detalle = DB::table('detalle_ventas')
                 ->where('id_venta', $id)
                 ->get();
@@ -265,7 +234,6 @@ class VentaController extends Controller
             $cambio = $montoPagado - $request->total;
 
             //  Insertar venta completa
->>>>>>> mejora-caja
             $ventaId = DB::table('ventas')->insertGetId([
                 'numero_ticket' => $ticket,
                 'id_usuario' => auth()->user()->id_usuario,
@@ -276,13 +244,8 @@ class VentaController extends Controller
                 'total' => $request->total,
 
                 'metodo_pago' => $request->metodo_pago ?? 'EFECTIVO',
-<<<<<<< HEAD
-                'monto_pagado' => $request->monto_pagado ?? 0,
-                'cambio' => $request->cambio ?? 0,
-=======
                 'monto_pagado' => $montoPagado,
                 'cambio' => $cambio,
->>>>>>> mejora-caja
 
                 'cliente_nombre' => $request->cliente_nombre,
                 'cliente_dni' => $request->cliente_dni,
@@ -292,31 +255,11 @@ class VentaController extends Controller
             ]);
 
 
-<<<<<<< HEAD
-            // ✅ Convertir JSON a array
-            $productos = json_decode($request->productos, true);
-
-            foreach ($productos as $item) {
-
-                $producto = DB::table('productos')
-                    ->where('id_producto', $item['id'])
-                    ->first();
-
-                if ($producto->stock_actual < $item['cantidad']) {
-                    throw new \Exception("Stock insuficiente para {$producto->nombre}");
-                }
-            }
-
-            foreach ($productos as $item) {
-
-                // ✅ Insertar detalle
-=======
             
 
             foreach ($productos as $item) {
 
                 //  Insertar detalle
->>>>>>> mejora-caja
                 DB::table('detalle_ventas')->insert([
                     'id_venta' => $ventaId,
                     'id_producto' => $item['id'],
@@ -325,19 +268,12 @@ class VentaController extends Controller
                     'subtotal' => $item['cantidad'] * $item['precio']
                 ]);
 
-<<<<<<< HEAD
-                // ✅ Descontar stock
-=======
                 //  Descontar stock
->>>>>>> mejora-caja
                 DB::table('productos')
                     ->where('id_producto', $item['id'])
                     ->decrement('stock_actual', $item['cantidad']);
             }
 
-<<<<<<< HEAD
-            // ✅ Auditoría
-=======
             // Registrar movimiento de caja por la venta
             $caja = DB::table('caja')
                 ->where('estado', 'ABIERTA')
@@ -387,7 +323,6 @@ class VentaController extends Controller
             }
 
             //  Auditoría
->>>>>>> mejora-caja
             DB::table('auditoria')->insert([
                 'id_usuario' => auth()->user()->id_usuario,
                 'tabla_afectada' => 'ventas',
@@ -409,16 +344,9 @@ class VentaController extends Controller
 
             DB::rollback();
 
-<<<<<<< HEAD
-            return back()->with('error', '❌ Error en la venta');
-        }
-    }
-}
-=======
             //dd($e->getMessage());
             return back()->with('error', $e->getMessage());
 
         }
     }
 }
->>>>>>> mejora-caja
