@@ -24,7 +24,11 @@ class Kernel extends HttpKernel
 
         ],
     ];
+    protected $middlewareAliases = [
+        'role' => \App\Http\Middleware\RoleMiddleware::class,
+    ];
+
     protected $routeMiddleware = [
-    'role' => \App\Http\Middleware\RoleMiddleware::class,
-];
+        'role' => \App\Http\Middleware\RoleMiddleware::class,
+    ];
 }

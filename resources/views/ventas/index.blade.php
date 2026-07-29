@@ -3,6 +3,7 @@
 @section('content')
 
 @if(session('success'))
+<<<<<<< HEAD
 <div class="alert alert-success">
     {{ session('success') }}
 </div>
@@ -12,10 +13,22 @@
 <div class="alert alert-danger">
     {{ session('error') }}
 </div>
+=======
+    <div class="alert alert-success">
+        {{ session('success') }}
+    </div>
+@endif
+
+@if(session('error'))
+    <div class="alert alert-danger">
+        {{ session('error') }}
+    </div>
+>>>>>>> mejora-caja
 @endif
 
 <h3>Ventas</h3>
 
+<<<<<<< HEAD
 <div class="row">
 
 <!-- PRODUCTOS -->
@@ -70,6 +83,88 @@
     </button>
 
 </div>
+=======
+    <div class="mb-3">
+
+        <a href="{{ route('ventas.historial') }}"
+        class="btn btn-secondary">
+
+            📋 Historial de Ventas
+
+        </a>
+
+    </div>
+
+    <div class="row">
+
+    <!-- PRODUCTOS -->
+    <div class="col-md-8">
+
+    <input type="text" id="buscar" class="form-control mb-3" placeholder="Buscar por nombre o código de barras...">
+
+        <div class="card">
+            <div class="card-header">Productos</div>
+
+            <div class="card-body">
+
+                <div class="row">
+                    @foreach($productos as $p)
+                    <div class="col-md-4 mb-3 producto-item"
+                        data-id="{{ $p->id_producto }}"
+                        data-nombre="{{ strtolower($p->nombre) }}"
+                        data-codigo="{{ $p->codigo_barra }}"
+                        data-precio="{{ $p->precio_venta }}"
+                        data-stock="{{ $p->stock_actual }}">    
+                    
+    <!---
+                        <div class="card p-2">
+                            <h6>{{ $p->nombre }}</h6>
+                            <p>S/ {{ $p->precio_venta }}</p>
+
+                            <button class="btn btn-primary btn-sm"
+                                onclick="add({{ $p->id_producto }}, '{{ $p->nombre }}', {{ $p->precio_venta }}, {{ $p->stock_actual }})">
+                                Agregar
+                            </button>
+                        </div>
+    -->
+
+
+        <div class="card p-2">
+
+            <div class="d-flex justify-content-between align-items-center">
+
+                <div>
+                    <h6 class="mb-1">{{ $p->nombre }}</h6>
+
+                        <small class="text-muted">
+                            Código: {{ $p->codigo_barra }}
+                        </small>
+
+                        <br>
+
+                        <small class="text-success">
+                            C$ {{ number_format($p->precio_venta,2) }}
+                        </small>
+                </div>
+
+                <!-- ✅ STOCK (ZONA VERDE QUE MARCASTE) -->
+                <div class="text-end">
+                    <span class="badge
+                        {{ $p->stock_actual <= 10 ? 'bg-danger' : ($p->stock_actual <= 20 ? 'bg-warning text-dark' : 'bg-success') }}">
+
+                        Stock: {{ $p->stock_actual }}
+                    </span>
+                </div>
+
+            </div>
+
+            <button class="btn btn-primary btn-sm mt-2 w-100"
+                onclick="add({{ $p->id_producto }}, '{{ $p->nombre }}', {{ $p->precio_venta }}, {{ $p->stock_actual }})">
+                Agregar
+            </button>
+
+        </div>
+>>>>>>> mejora-caja
 
 
                 </div>
@@ -92,9 +187,25 @@
             <ul id="carrito" class="list-group mb-3"></ul>
 
             <h3 class="text-success fw-bold">
+<<<<<<< HEAD
                 Total: S/ <span id="total">0</span>
             </h3>
 
+=======
+                Total: C$ <span id="total">0</span>
+            </h3>
+
+            <div
+                id="totalDolares"
+                class="alert alert-info py-2 mt-2"
+                style="display:none;">
+
+                <strong>Equivale a:</strong>
+                <span id="usdTotal">US$ 0.00</span>
+
+            </div>
+
+>>>>>>> mejora-caja
            <form action="{{ route('ventas.procesar') }}" method="POST">
                 @csrf
 
@@ -110,12 +221,20 @@
 
                     <div class="mb-2">
                         <label>Método de Pago</label>
+<<<<<<< HEAD
                         <select name="metodo_pago" class="form-control">
                             <option value="EFECTIVO">Efectivo</option>
                             <option value="TARJETA">Tarjeta</option>
                             <option value="TRANSFERENCIA">Transferencia</option>
                             <option value="YAPE">Yape</option>
                             <option value="PLIN">Plin</option>
+=======
+                        <select name="metodo_pago" id="metodo_pago" class="form-control">
+                            <option value="EFECTIVO">Efectivo</option>
+                            <option value="TARJETA">Tarjeta</option>
+                            <option value="TRANSFERENCIA">Transferencia</option>
+                            <option value="DOLARES">Dólares</option>
+>>>>>>> mejora-caja
                         </select>
                     </div>
 
@@ -124,6 +243,7 @@
                         <textarea name="observaciones" class="form-control"></textarea>
                     </div>
 
+<<<<<<< HEAD
                     <div class="mb-2">
                         <label>Paga con</label>
                         <input type="number" name="monto_pagado" id="pago" class="form-control">
@@ -133,12 +253,40 @@
                         <label>Cambio</label>
                         <input type="text" name="cambio" id="cambio" class="form-control" readonly>
                     </div>
+=======
+                    <div class="mb-2" id="divPago">
+                        <label>Paga con</label>
+                        <input type="number"
+                            name="monto_pagado"
+                            id="pago"
+                            class="form-control">
+                    </div>
+
+                    <div class="mb-2" id="divCambio">
+                        <label>Cambio</label>
+                        <input type="text"
+                            name="cambio"
+                            id="cambio"
+                            class="form-control"
+                            readonly>
+</div>
+>>>>>>> mejora-caja
 
                 <input type="hidden" name="productos" id="productosInput">
                 <input type="hidden" name="total" id="totalInput">
 
+<<<<<<< HEAD
                 <button type="submit" class="btn btn-success w-100">
                     Finalizar Venta
+=======
+                <button
+                    type="submit"
+                    class="btn btn-success w-100"
+                    onclick="return validarVenta()">
+
+                    Finalizar Venta
+
+>>>>>>> mejora-caja
                 </button>
             </form>
 
@@ -151,9 +299,37 @@
 
 <script>
 
+<<<<<<< HEAD
 let carrito = [];
 
 function add(id, nombre, precio, stock){
+=======
+function actualizarMetodoPago(){
+
+    let metodo = document.getElementById("metodo_pago").value;
+
+    if(metodo == "TARJETA" || metodo == "TRANSFERENCIA"){
+
+        document.getElementById("divPago").style.display = "none";
+        document.getElementById("divCambio").style.display = "none";
+
+    }else{
+
+        document.getElementById("divPago").style.display = "block";
+        document.getElementById("divCambio").style.display = "block";
+
+    }
+
+    render();
+}
+
+const tipoCambio = {{ $caja->tipo_cambio }};
+
+let carrito = [];
+
+function add(id, nombre, precio, stock){
+    
+>>>>>>> mejora-caja
 
     let item = carrito.find(p => p.id === id);
 
@@ -223,7 +399,11 @@ function render(){
                     <button class="btn btn-sm btn-secondary" onclick="changeQty(${p.id}, 1)">+</button>
                 </div>
 
+<<<<<<< HEAD
                 <span>S/ ${subtotal.toFixed(2)}</span>
+=======
+                <span>C$ ${subtotal.toFixed(2)}</span>
+>>>>>>> mejora-caja
 
             </div>
         </li>
@@ -235,6 +415,7 @@ function render(){
 
     document.getElementById('totalInput').value = total;
     document.getElementById('productosInput').value = JSON.stringify(carrito);
+<<<<<<< HEAD
 }
 
 // ✅ BUSCADOR
@@ -256,6 +437,60 @@ document.getElementById('buscar').addEventListener('keyup', function(){
 
 <script>
 
+=======
+
+    // Mostrar equivalente en dólares
+    let metodo = document.getElementById("metodo_pago").value;
+
+    if(metodo === "DOLARES"){
+
+        document.getElementById("totalDolares").style.display = "block";
+
+        let totalUSD = total / tipoCambio;
+
+        document.getElementById("usdTotal").innerText =
+            "US$ " + totalUSD.toFixed(2);
+
+    }else{
+
+        document.getElementById("totalDolares").style.display = "none";
+
+    }
+}
+
+// ✅ BUSCADOR
+document.getElementById("buscar").addEventListener("keydown", function(e){
+
+    if(e.key === "Enter"){
+
+        e.preventDefault();
+
+        let codigo = this.value.trim();
+
+        let productos = document.querySelectorAll(".producto-item");
+
+        productos.forEach(function(item){
+
+            if(item.dataset.codigo === codigo){
+
+                add(
+                    parseInt(item.dataset.id),
+                    item.dataset.nombre,
+                    parseFloat(item.dataset.precio),
+                    parseInt(item.dataset.stock)
+                );
+
+                document.getElementById("buscar").value = "";
+
+            }
+
+        });
+
+    }
+
+});
+
+>>>>>>> mejora-caja
 document.addEventListener("DOMContentLoaded", function(){
 
     console.log("JS cargado"); // prueba
@@ -270,8 +505,23 @@ document.addEventListener("DOMContentLoaded", function(){
             let items = document.querySelectorAll('.producto-item');
 
             items.forEach(item => {
+<<<<<<< HEAD
                 let nombre = item.innerText.toLowerCase();
                 item.style.display = nombre.includes(filtro) ? '' : 'none';
+=======
+                let nombre = item.dataset.nombre;
+                let codigo = item.dataset.codigo;
+
+                if(
+                    nombre.includes(filtro) ||
+                    codigo.includes(filtro)
+                ){
+                    item.style.display = '';
+                }   
+                else{
+                    item.style.display = 'none';
+                    }
+>>>>>>> mejora-caja
             });
 
         });
@@ -280,10 +530,15 @@ document.addEventListener("DOMContentLoaded", function(){
 
 });
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> mejora-caja
 </script>
 
 <script>
 
+<<<<<<< HEAD
 document.getElementById('pago').addEventListener('keyup', function(){
 
     let pago = parseFloat(this.value) || 0;
@@ -295,9 +550,68 @@ document.getElementById('pago').addEventListener('keyup', function(){
 
 });
 
+=======
+function calcularCambio(){
+
+    let pago = parseFloat(document.getElementById("pago").value) || 0;
+
+    let total = parseFloat(document.getElementById("total").innerText) || 0;
+
+    let metodo = document.getElementById("metodo_pago").value;
+
+    let cambio = 0;
+
+    if(metodo === "DOLARES"){
+
+        // El cliente escribe dólares
+        let pagoCordobas = pago * tipoCambio;
+
+        cambio = pagoCordobas - total;
+
+    }else{
+
+        // El cliente escribe córdobas
+        cambio = pago - total;
+
+    }
+
+    document.getElementById("cambio").value =
+        cambio >= 0 ? cambio.toFixed(2) : "0.00";
+
+}
+document.getElementById("pago")
+    .addEventListener("keyup", calcularCambio);
+
+document.getElementById("metodo_pago")
+.addEventListener("change", function(){
+
+    actualizarMetodoPago();
+
+    calcularCambio();
+
+});
+actualizarMetodoPago();
+function validarVenta(){
+
+    if(carrito.length===0){
+
+        alert("Debe agregar productos.");
+
+        return false;
+
+    }
+
+    return true;
+
+}
+>>>>>>> mejora-caja
 </script>
 ``
 
 
+<<<<<<< HEAD
 @endsection
 
+=======
+@endsection 
+>>>>>>> mejora-caja

@@ -23,6 +23,7 @@
                         <th>Nombre Completo</th>
                         <th>Email</th>
                         <th>Rol</th>
+                        <th>Estado</th>
                         <th>Acciones</th>
                     </tr>
                 </thead>
@@ -36,6 +37,13 @@
                         <td>{{ $usuario->email }}</td>
                         <td>{{ $usuario->rol->nombre }}</td>
 
+                        <td>
+                            @if($usuario->activo)
+                                <span class="badge bg-success">Activo</span>
+                            @else
+                                <span class="badge bg-danger">Inactivo</span>
+                            @endif
+                        </td>
                         <td>
                                     @if(auth()->user()->rol->nombre == 'ADMINISTRADOR')
 

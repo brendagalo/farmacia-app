@@ -13,9 +13,35 @@ class Producto extends Model
     const UPDATED_AT = 'actualizado_en';
 
     protected $fillable = [
-        'nombre',
-        'descripcion',
-        'precio_venta',
-        'stock_actual'
+          'codigo_barra',
+    'nombre',
+    'descripcion',
+    'id_categoria',
+    'id_proveedor',
+    'concentracion',
+    'presentacion',
+    'stock_actual',
+    'stock_minimo',
+    'precio_compra',
+    'precio_venta',
+    'activo'
     ];
+
+    public function categoria()
+    {
+        return $this->belongsTo(
+            Categoria::class,
+            'id_categoria',
+            'id_categoria'
+        );
+    }
+
+    public function proveedor()
+    {
+        return $this->belongsTo(
+            Proveedor::class,
+            'id_proveedor',
+            'id_proveedor'
+        );
+    }
 }

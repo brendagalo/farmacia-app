@@ -1,5 +1,8 @@
 <!DOCTYPE html>
 <html lang="es">
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -11,6 +14,9 @@
     <!-- Bootstrap Icons -->
     <link rel="stylesheet"
           href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+        <link rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 </head>
 
         <script>
@@ -39,11 +45,11 @@
 
         <div class="text-center">
             <p class="mb-0 fw-bold">
-                {{ auth()->user()->nombre_completo }}
+                {{ optional(auth()->user())->nombre_completo }}
             </p>
 
             <small class="text-secondary">
-                {{ auth()->user()->rol->nombre }}
+                {{ optional(optional(auth()->user())->rol)->nombre }}
             </small>
         </div>
 
@@ -71,6 +77,44 @@
             </li>
             @endif
 
+            <!-- Categorías -->
+            @if(auth()->user()->rol->nombre == 'ADMINISTRADOR')
+            <li class="nav-item">
+                <a class="nav-link text-white {{ request()->routeIs('categorias.*') ? 'fw-bold bg-secondary rounded' : '' }}"
+                   href="{{ route('categorias.index') }}">
+                    <i class="bi bi-tags"></i>
+                    Categorías
+                </a>
+            </li>
+            @endif
+
+             <!-- Compras -->
+            @if(auth()->user()->rol->nombre == 'ADMINISTRADOR')
+            <li class="nav-item">
+                <a class="nav-link text-white {{ request()->routeIs('compras.*') ? 'fw-bold bg-secondary rounded' : '' }}"
+                   href="{{ route('compras.index') }}">
+                    <i class="bi bi-box-seam"></i>
+                    Compras
+                </a>
+            </li>
+            @endif
+
+            <!-- Proveedores -->
+            @if(auth()->user()->rol->nombre == 'ADMINISTRADOR')
+            <li class="nav-item">
+                <a class="nav-link text-white {{ request()->routeIs('proveedores.*') ? 'fw-bold bg-secondary rounded' : '' }}"
+                   href="{{ route('proveedores.index') }}">
+                    <i class="bi bi-truck"></i>
+                    Proveedores
+                </a>
+            </li>
+            @endif
+
+           <hr>
+           <h1></h1>
+
+
+
             <!-- Usuarios -->
             @if(auth()->user()->rol->nombre == 'ADMINISTRADOR')
                 <li class="nav-item">
@@ -82,6 +126,7 @@
                 </li>
             @endif
 
+<<<<<<< HEAD
             <li class="nav-item">
                 <a href="{{ route('ventas.index') }}"
                 class="nav-link text-white {{ request()->routeIs('ventas.*') ? 'bg-secondary rounded' : '' }}">
@@ -91,12 +136,44 @@
                 </a>
             </li>
 
+=======
+>>>>>>> mejora-caja
             <!-- Clientes -->
             <li class="nav-item">
                 <a class="nav-link text-white {{ request()->routeIs('clientes.*') ? 'fw-bold bg-secondary rounded' : '' }}"
                    href="{{ route('clientes.index') }}">
                     <i class="bi bi-people"></i>
                     Clientes
+                </a>
+            </li>
+
+            <hr>
+            <h1></h1>
+
+            <!-- Venta -->
+            <li class="nav-item">
+                <a href="{{ route('ventas.index') }}"
+                class="nav-link text-white {{ request()->routeIs('ventas.*') ? 'bg-secondary rounded' : '' }}">
+
+                    <i class="bi bi-cart-check"></i>
+                    Ventas
+                </a>
+            </li>
+
+            <li class="nav-item">
+                <a href="{{ route('caja.index') }}"
+                class="nav-link text-white {{ request()->routeIs('caja.*') ? 'bg-secondary rounded' : '' }}">
+
+                     <i class="fas fa-cash-register"></i>
+                    Caja
+                </a>
+            </li>
+
+            <li class="nav-item">
+                <a href="{{ route('backups.index') }}"
+                class="nav-link text-white {{ request()->routeIs('backups.*') ? 'bg-secondary rounded' : '' }}">
+                    <i class="bi bi-shield-check"></i>
+                    Backups
                 </a>
             </li>
 
@@ -132,6 +209,6 @@
 
 <!-- Bootstrap JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-
+@stack('scripts')
 </body>
 </html>

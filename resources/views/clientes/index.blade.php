@@ -1,44 +1,90 @@
-<h2>Clientes</h2>
+@extends('layouts.app')
 
-<a href="{{ route('clientes.create') }}">
-    Nuevo Cliente
-</a>
+@section('content')
 
-<table>
-    <thead>
-        <tr>
-            <th>ID</th>
-            <th>Nombre</th>
-            <th>Cédula</th>
-            <th>Teléfono</th>
-            <th>Acciones</th>
-        </tr>
-    </thead>
+<div class="container-fluid">
 
-    <tbody>
-        @foreach($clientes as $cliente)
-        <tr>
-            <td>{{ $cliente->id_cliente }}</td>
-            <td>{{ $cliente->nombres }} {{ $cliente->apellidos }}</td>
-            <td>{{ $cliente->cedula }}</td>
-            <td>{{ $cliente->telefono }}</td>
+    <div class="d-flex justify-content-between mb-3">
+        <h3>Clientes</h3>
 
-            <td>
-                <a href="{{ route('clientes.edit',$cliente->id_cliente) }}">
-                    Editar
-                </a>
+        <a href="{{ route('clientes.create') }}"
+           class="btn btn-primary">
+            + Nuevo Cliente
+        </a>
+    </div>
 
-                <form action="{{ route('clientes.destroy',$cliente->id_cliente) }}"
-                      method="POST">
-                    @csrf
-                    @method('DELETE')
+    @if(session('success'))
+        <div class="alert alert-success">
+            {{ session('success') }}
+        </div>
+    @endif
 
-                    <button type="submit">
-                        Eliminar
-                    </button>
-                </form>
-            </td>
-        </tr>
-        @endforeach
-    </tbody>
-</table>
+    <div class="card shadow">
+        <div class="card-body">
+
+            <table class="table table-hover">
+
+                <thead class="table-dark">
+                    <tr>
+                        <th>Nombres</th>
+                        <th>Apellidos</th>
+                        <th>Cédula</th>
+                        <th>Teléfono</th>
+                        <th>Email</th>
+                        <th>Estado</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                @foreach($clientes as $cliente)
+
+                    <tr>
+                        <td>{{ $cliente->nombres }}</td>
+                        <td>{{ $cliente->apellidos }}</td>
+                        <td>{{ $cliente->cedula }}</td>
+                        <td>{{ $cliente->telefono }}</td>
+                        <td>{{ $cliente->email }}</td>
+
+                        <td>
+                            @if($cliente->estado)
+                                Activo
+                            @else
+                                Inactivo
+                            @endif
+                        </td>
+
+                        <td>
+                            <a href="{{ route('clientes.edit', $cliente->id_cliente) }}"
+                               class="btn btn-warning btn-sm">
+                                Editar
+                            </a>
+
+                            <form action="{{ route('clientes.destroy', $cliente->id_cliente) }}"
+                                  method="POST"
+                                  class="d-inline">
+                                @csrf
+                                @method('DELETE')
+
+                                <button class="btn btn-danger btn-sm"
+                                        onclick="return confirm('¿Eliminar cliente?')">
+                                    Eliminar
+                                </button>
+                            </form>
+                        </td>
+
+                    </tr>
+
+                @endforeach
+
+                </tbody>
+
+            </table>
+
+        </div>
+    </div>
+
+</div>
+
+@endsection
