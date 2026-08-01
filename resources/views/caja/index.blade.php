@@ -1,7 +1,76 @@
 @extends('layouts.app')
-
+    
 @section('content')
+<style>
 
+    .btn-pastel-green{
+        background:#CDECCF;
+        color:#2E7D32;
+        border:1px solid #A5D6A7;
+    }
+
+    .btn-pastel-green:hover{
+        background:#B7E4BC;
+        color:#1B5E20;
+    }
+
+    .btn-pastel-red{
+        background:#F8D7DA;
+        color:#B02A37;
+        border:1px solid #F1AEB5;
+    }
+
+    .btn-pastel-red:hover{
+        background:#F5C2C7;
+        color:#842029;
+    }
+
+    .btn-pastel-blue{
+        background:#D6ECFF;
+        color:#0A58CA;
+        border:1px solid #9EC5FE;
+    }
+
+    .btn-pastel-blue:hover{
+        background:#C4E1FF;
+        color:#084298;
+    }
+
+    .btn-pastel-yellow{
+        background:#FFF3CD;
+        color:#997404;
+        border:1px solid #FFE69C;
+    }
+
+    .btn-pastel-yellow:hover{
+        background:#FFE8A1;
+        color:#7A5C00;
+    }
+
+    .btn-pastel-purple{
+        background:#E8D9F8;
+        color:#6F42C1;
+        border:1px solid #D4B8F5;
+    }
+
+    .btn-pastel-purple:hover{
+        background:#DDC6F5;
+        color:#59359A;
+    }
+
+    .btn-pastel{
+        height:95px;
+        font-weight:600;
+        border-radius:12px;
+        transition:.3s;
+    }
+
+    .btn-pastel:hover{
+        transform:translateY(-2px);
+        box-shadow:0 5px 15px rgba(0,0,0,.15);
+    }
+
+    </style>
 <div class="container">
 
     <div class="d-flex justify-content-between align-items-center mb-4">
@@ -161,11 +230,11 @@
         <div class="col-md-2">
             @if($abierta)
                 <a href="{{ route('caja.ingreso') }}"
-                class="btn btn-success w-100">
+                class="btn btn-pastel-green btn-pastel w-100">
                     ➕<br>Nuevo Ingreso
                 </a>
             @else
-                <button class="btn btn-success w-100" disabled>
+                <button class="btn btn-pastel-green btn-pastel w-100" disabled>
                     ➕<br>Nuevo Ingreso
                 </button>
             @endif
@@ -174,11 +243,11 @@
         <div class="col-md-2">
             @if($abierta)
                 <a href="{{ route('caja.egreso') }}"
-                class="btn btn-danger w-100">
+                class="btn btn-pastel-red btn-pastel w-100">
                     ➖<br>Nuevo Egreso
                 </a>
             @else
-                <button class="btn btn-danger w-100" disabled>
+                <button class="btn btn-pastel-red btn-pastel w-100" disabled>
                     ➖<br>Nuevo Egreso
                 </button>
             @endif
@@ -187,7 +256,7 @@
         <div class="col-md-2">
 
             <a href="{{ route('caja.movimientos') }}"
-                class="btn btn-info w-100">
+                class="btn btn-pastel-blue btn-pastel w-100">
 
                 📋<br>
                 Movimientos
@@ -199,12 +268,12 @@
         <div class="col-md-2">
             @if($abierta)
                 <a href="{{ route('caja.arqueo') }}"
-                class="btn btn-warning w-100">
+                class="btn btn-pastel-yellow btn-pastel w-100">
                     💵<br>Arqueo
                 </a>
             @else
                 <a href="{{ route('caja.index') }}#abrirCaja"
-                class="btn btn-primary w-100">
+                class="btn btn-pastel-purple btn-pastel w-100">
                     🔓<br>Abrir Caja
                 </a>
             @endif
@@ -229,7 +298,7 @@
                                 <label>Saldo Inicial</label>
                                 <input type="number"
                                     step="0.01"
-                                    min="0"
+                                    min="1"
                                     name="saldo_inicial"
                                     class="form-control"
                                     required>
@@ -284,11 +353,12 @@
 
                     <input
                         type="number"
-                        step="0.01"
+                        step="1"
                         name="saldo_inicial"
                         class="form-control"
                         required>
 
+                        
                 </div>
 
                 <div class="mb-3">

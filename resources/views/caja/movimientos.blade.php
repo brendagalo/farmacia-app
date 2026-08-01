@@ -8,6 +8,79 @@
         Movimientos de Caja
     </h2>
 
+
+    <form method="GET" action="{{ route('caja.movimientos') }}" class="row mb-4">
+
+        <div class="col-md-2">
+            <label>Desde</label>
+            <input type="date"
+                name="desde"
+                class="form-control"
+                value="{{ request('desde') }}">
+        </div>
+
+        <div class="col-md-2">
+            <label>Hasta</label>
+            <input type="date"
+                name="hasta"
+                class="form-control"
+                value="{{ request('hasta') }}">
+        </div>
+
+        <div class="col-md-2">
+            <label>Tipo</label>
+
+            <select name="tipo" class="form-control">
+
+                <option value="">Todos</option>
+                <option value="INGRESO">Ingreso</option>
+                <option value="EGRESO">Egreso</option>
+
+            </select>
+
+        </div>
+
+        <div class="col-md-2">
+            <label>Método</label>
+
+            <select name="metodo" class="form-control">
+
+                <option value="">Todos</option>
+                <option value="EFECTIVO">Efectivo</option>
+                <option value="TARJETA">Tarjeta</option>
+                <option value="TRANSFERENCIA">Transferencia</option>
+                <option value="DOLARES">Dólares</option>
+
+            </select>
+
+        </div>
+
+        <div class="col-md-2">
+            <label>Cliente</label>
+                <input type="text"
+                    name="cliente"
+                    class="form-control"
+                    value="{{ request('cliente') }}">
+                    
+        </div>
+
+        <div class="col-md-2 d-flex align-items-end">
+
+            <button class="btn btn-primary w-100">
+                Buscar
+            </button>
+
+        </div>
+        <h1></h1>
+
+        <div class="col-md-2 d-flex align-items-end">
+
+            <a href="{{ route('caja.movimientos') }}" class="btn btn-secondary w-100">
+                Limpiar
+            </a>
+        </div>
+
+    </form>
     <div class="card shadow">
 
         <div class="card-body table-responsive">

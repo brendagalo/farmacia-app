@@ -3,6 +3,7 @@
 namespace App\Http;
 
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
+use App\Http\Middleware\SessionTimeout;
 
 class Kernel extends HttpKernel
 {
@@ -24,7 +25,11 @@ class Kernel extends HttpKernel
 
         ],
     ];
+    protected $middlewareAliases = [
+        'role' => \App\Http\Middleware\RoleMiddleware::class,
+    ];
+
     protected $routeMiddleware = [
-    'role' => \App\Http\Middleware\RoleMiddleware::class,
-];
+        'role' => \App\Http\Middleware\RoleMiddleware::class,
+    ];
 }

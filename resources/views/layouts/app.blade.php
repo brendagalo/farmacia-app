@@ -77,6 +77,18 @@
             </li>
             @endif
 
+            <!-- Categorías -->
+            @if(auth()->user()->rol->nombre == 'ADMINISTRADOR')
+            <li class="nav-item">
+                <a class="nav-link text-white {{ request()->routeIs('categorias.*') ? 'fw-bold bg-secondary rounded' : '' }}"
+                   href="{{ route('categorias.index') }}">
+                    <i class="bi bi-tags"></i>
+                    Categorías
+                </a>
+            </li>
+            @endif
+            
+
              <!-- Compras -->
             @if(auth()->user()->rol->nombre == 'ADMINISTRADOR')
             <li class="nav-item">
@@ -84,6 +96,17 @@
                    href="{{ route('compras.index') }}">
                     <i class="bi bi-box-seam"></i>
                     Compras
+                </a>
+            </li>
+            @endif
+
+           <!-- Proveedores -->
+            @if(auth()->user()->rol->nombre == 'ADMINISTRADOR')
+            <li class="nav-item">
+                <a class="nav-link text-white {{ request()->routeIs('proveedores.*') ? 'fw-bold bg-secondary rounded' : '' }}"
+                   href="{{ route('proveedores.index') }}">
+                    <i class="bi bi-truck"></i>
+                    Proveedores
                 </a>
             </li>
             @endif
@@ -135,7 +158,25 @@
                 </a>
             </li>
 
-            
+            <li class="nav-item">
+                <a href="{{ route('reportes.index') }}"
+                    class="nav-link text-white {{ request()->routeIs('reportes.*') ? 'bg-secondary rounded' : '' }}">
+
+                        <i class="bi bi-file-earmark-text"></i>
+                        Reportes
+
+                </a>
+
+            </li>
+
+            <li class="nav-item">
+                <a href="{{ route('backups.index') }}"
+                class="nav-link text-white {{ request()->routeIs('backups.*') ? 'bg-secondary rounded' : '' }}">
+                    <i class="bi bi-shield-check"></i>
+                    Backups
+                </a>
+            </li>
+
 
         </ul>
 

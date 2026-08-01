@@ -30,10 +30,16 @@ class CajaController extends Controller
 
             if($caja){
 
-                $ventasHoy = DB::table('ventas')
-                    ->whereDate('fecha_venta', today())
-                    ->where('estado','COMPLETADA')
-                    ->sum('total');
+                $ventasHoy = DB::table('movimientos_caja')
+                ->join(
+                    'ventas',
+                    'movimientos_caja.id_venta',
+                    '=',
+                    'ventas.id_venta'
+                )
+                ->where('movimientos_caja.id_caja', $caja->id_caja)
+                ->where('ventas.estado', 'COMPLETADA')
+                ->sum('ventas.total');
 
                 $ingresos = DB::table('movimientos_caja')
                     ->where('id_caja',$caja->id_caja)
@@ -215,9 +221,9 @@ class CajaController extends Controller
                 ->with('success','Egreso registrado correctamente.');
     }
 
-    public function movimientos()
+    public function movimientos(Request $request)
     {
-        $movimientos = DB::table('movimientos_caja')
+        $query = DB::table('movimientos_caja')
 
             ->leftJoin(
                 'usuarios',
@@ -247,14 +253,81 @@ class CajaController extends Controller
 
                 'ventas.estado as estado_venta'
 
-            )
+            );
+               // filtros 
+            if($request->filled('fecha'))
+            {
+                $query->whereDate(
+                    'movimientos_caja.creado_en',
+                    $request->fecha
+                );
 
-            ->orderByDesc('movimientos_caja.creado_en')
+            }
+            
+            if ($request->filled('desde')) {
 
-            ->get();
+                $query->whereDate(
+                    'movimientos_caja.creado_en',
+                    '>=',
+                    $request->desde
+                );
 
-        return view('caja.movimientos', compact('movimientos'));
+            }
+
+            if ($request->filled('hasta')) {
+
+                $query->whereDate(
+                    'movimientos_caja.creado_en',
+                    '<=',
+                    $request->hasta
+                );
+
+            }
+
+            if($request->filled('tipo'))
+            {
+                $query->where(
+                'movimientos_caja.tipo_movimiento',
+                $request->tipo
+                );
+
+            }
+
+           if($request->filled('metodo'))
+            {
+                $query->where(
+                    'ventas.metodo_pago',
+                    $request->metodo
+                );
+
+            }
+            
+            if($request->filled('cliente'))
+            {
+                $query->where(
+                    'ventas.cliente_nombre',
+                    'like',
+                    '%'.$request->cliente.'%'
+                );
+
+            }
+            if($request->filled('ticket'))
+            {
+                $query->where(
+                    'ventas.numero_ticket',
+                    'like',
+                    '%'.$request->ticket.'%'
+                );
+
+            }
+ 
+            $movimientos = $query
+                ->orderByDesc('movimientos_caja.creado_en')
+                ->get();
+
+            return view('caja.movimientos', compact('movimientos'));
     }
+            
 
     public function arqueo()
     {
@@ -268,10 +341,16 @@ class CajaController extends Controller
 
         }
 
-            $ventas = DB::table('ventas')
-                ->where('estado', 'COMPLETADA')
-                ->whereDate('fecha_venta', today())
-                ->sum('total');
+            $ventas = DB::table('movimientos_caja')
+            ->join(
+                'ventas',
+                'movimientos_caja.id_venta',
+                '=',
+                'ventas.id_venta'
+            )
+            ->where('movimientos_caja.id_caja', $caja->id_caja)
+            ->where('ventas.estado', 'COMPLETADA')
+            ->sum('ventas.total');
 
             $ingresos = DB::table('movimientos_caja')
                 ->where('id_caja', $caja->id_caja)
@@ -314,10 +393,16 @@ class CajaController extends Controller
         }
 
         // Ventas del día
-        $ventas = DB::table('ventas')
-            ->where('estado', 'COMPLETADA')
-            ->whereDate('fecha_venta', today())
-            ->sum('total');
+        $ventas = DB::table('movimientos_caja')
+        ->join(
+            'ventas',
+            'movimientos_caja.id_venta',
+            '=',
+            'ventas.id_venta'
+        )
+            ->where('movimientos_caja.id_caja', $caja->id_caja)
+            ->where('ventas.estado', 'COMPLETADA')
+            ->sum('ventas.total');
 
         // Ingresos manuales
         $ingresos = DB::table('movimientos_caja')
@@ -368,10 +453,16 @@ class CajaController extends Controller
         }
 
         // Total de ventas del día
-        $ventas = DB::table('ventas')
-            ->where('estado', 'COMPLETADA')
-            ->whereDate('fecha_venta', today())
-            ->sum('total');
+        $ventas = DB::table('movimientos_caja')
+        ->join(
+            'ventas',
+            'movimientos_caja.id_venta',
+            '=',
+            'ventas.id_venta'
+        )
+            ->where('movimientos_caja.id_caja', $caja->id_caja)
+            ->where('ventas.estado', 'COMPLETADA')
+            ->sum('ventas.total');
 
         // Ingresos manuales
         $ingresos = DB::table('movimientos_caja')

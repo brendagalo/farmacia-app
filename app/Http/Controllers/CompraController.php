@@ -26,7 +26,9 @@ class CompraController extends Controller
 
     public function create()
 {
-    $proveedores = Proveedor::all();
+    $proveedores = Proveedor::where('activo', true)
+        ->orderBy('nombre')
+        ->get();
 
     $productos = Producto::where(
         'activo',
