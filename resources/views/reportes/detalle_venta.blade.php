@@ -14,6 +14,31 @@
 
         </h2>
 
+
+        <div class="d-flex gap-2 mb-4">
+
+            
+
+            <a href="{{ route('reportes.ventas.detalle.pdf', $venta->id_venta) }}"
+            class="btn btn-danger">
+
+                <i class="bi bi-file-earmark-pdf"></i>
+                PDF
+
+            </a>
+
+            <a href="{{ route('reportes.ventas.detalle.imprimir', $venta->id_venta) }}"
+            target="_blank"
+            class="btn btn-primary">
+
+                <i class="bi bi-printer"></i>
+                Imprimir
+
+            </a>
+            
+
+        </div>
+
     <div class="card shadow">
 
         <div class="card-body">
@@ -68,6 +93,8 @@
 
                         <tr>
 
+                            <th>Código</th>
+
                             <th>Producto</th>
 
                             <th>Cantidad</th>
@@ -85,6 +112,7 @@
                         @foreach($detalle as $item)
 
                             <tr>
+                                <td>{{ $item->codigo_barra }}</td>
 
                                 <td>{{ $item->nombre }}</td>
 
@@ -122,12 +150,11 @@
 
             </table>
 
-            <a
-                href="{{ route('reportes.ventas') }}"
-                class="btn btn-secondary">
+           <a href="{{ route('reportes.ventas') }}"
+                class="btn btn-primary">
 
-                ← Volver
-
+                <i class="bi bi-arrow-left"></i>
+                Regresar
             </a>
 
         </div>

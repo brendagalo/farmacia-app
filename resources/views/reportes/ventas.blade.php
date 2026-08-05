@@ -334,7 +334,14 @@
 
     
     <div class="d-flex flex-wrap gap-2 mt-4 mb-3">
+        
+        <a href="{{ route('reportes.index') }}"
+            class="btn btn-primary">
 
+            <i class="bi bi-arrow-left"></i>
+            Regresar
+        </a>
+        
         <a href="{{ route('reportes.ventas.excel', request()->all()) }}"
             class="btn btn-success">
 
@@ -358,7 +365,7 @@
                 Imprimir
         </a>
 
-        
+
     </div>
 
 
@@ -509,15 +516,6 @@
 
                         <td class="text-nowrap">
                             
-                            {{-- Ver venta --}}
-                            <a href="{{ route('ventas.show',$venta->id_venta) }}"
-                            class="btn btn-sm btn-outline-primary"
-                            title="Ver venta">
-
-                                <i class="bi bi-eye"></i>
-
-                            </a>
-                                
                             {{-- Maestro Detalle --}}
                             <a href="{{ route('reportes.ventas.detalle',$venta->id_venta) }}"
                             class="btn btn-sm btn-outline-success"

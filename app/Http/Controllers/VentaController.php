@@ -278,6 +278,7 @@ class VentaController extends Controller
             $caja = DB::table('caja')
                 ->where('estado', 'ABIERTA')
                 ->first();
+
     //dd($caja);
             if ($caja) {
 
@@ -329,17 +330,28 @@ class VentaController extends Controller
                 'accion' => 'INSERT',
                 'registro_id' => $ventaId,
                 'datos_nuevos' => json_encode([
-                    'total' => $request->total
-                ]),
+                    'Ticket' => $ticket,
+                    'Cliente' => $request->cliente_nombre,
+                    'Método de pago' => $request->metodo_pago,
+                    'Subtotal' => $subtotal,
+                    'IGV' => $igv,
+                    'Total' => $request->total,
+                    'Monto pagado' => $montoPagado,
+                    'Cambio' => $cambio,
+                    'Estado' => 'COMPLETADA'
+                ], JSON_UNESCAPED_UNICODE),
+                
                 'ip_address' => request()->ip(),
                 'user_agent' => request()->userAgent()
             ]);
 
-            DB::commit();
+           DB::commit();
 
-            return redirect()->route('ventas.index')
-                ->with('success', '✅ Venta realizada correctamente');
-
+        return redirect()
+            ->route('ventas.index')
+            ->with('venta_finalizada', true)
+            ->with('id_venta', $ventaId)
+            ->with('success', '✅Venta realizada correctamente');
         } catch (\Exception $e) {
 
             DB::rollback();
@@ -348,5 +360,30 @@ class VentaController extends Controller
             return back()->with('error', $e->getMessage());
 
         }
+    }
+
+   public function voucher($id)
+    {
+        $venta = DB::table('ventas')
+            ->join('usuarios', 'ventas.id_usuario', '=', 'usuarios.id_usuario')
+            ->select(
+                'ventas.*',
+                'usuarios.nombre_completo'
+            )
+            ->where('ventas.id_venta', $id)
+            ->first();
+
+        $detalle = DB::table('detalle_ventas')
+            ->join('productos', 'detalle_ventas.id_producto', '=', 'productos.id_producto')
+            ->select(
+                'productos.nombre',
+                'detalle_ventas.cantidad',
+                'detalle_ventas.precio_unitario',
+                'detalle_ventas.subtotal'
+            )
+            ->where('detalle_ventas.id_venta', $id)
+            ->get();
+
+        return view('ventas.voucher', compact('venta', 'detalle'));
     }
 }

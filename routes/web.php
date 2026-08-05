@@ -15,6 +15,8 @@ use App\Http\Controllers\ProveedorController;
 use App\Http\Controllers\CategoriaController;
 use App\Http\Controllers\BackupController;
 
+
+
 Route::resource('productos', ProductoController::class)
     ->middleware(['auth ']);
 
@@ -74,8 +76,16 @@ Route::resource('clientes', ClienteController::class);
         ->name('ventas.show')
         ->middleware('auth');
 
+    Route::get('/ventas/{id}/voucher', [VentaController::class, 'voucher'])
+        ->name('ventas.voucher')
+        ->middleware('auth');
+
     Route::put('/ventas/{id}/anular', [VentaController::class, 'anular'])
         ->name('ventas.anular')
+        ->middleware('auth');
+    
+    Route::get('/ventas/{id}/ticket', [VentaController::class, 'ticket'])
+        ->name('ventas.ticket')
         ->middleware('auth');
 
 //Caja
@@ -124,7 +134,7 @@ Route::resource('clientes', ClienteController::class);
     Route::get('/caja/movimientos', [CajaController::class, 'movimientos'])
         ->name('caja.movimientos');
         Route::get('/caja/arqueo', [CajaController::class,'arqueo'])
-    ->name('caja.arqueo');
+            ->name('caja.arqueo');
 
     Route::post('/caja/arqueo', [CajaController::class,'guardarArqueo'])
         ->name('caja.arqueo.guardar');
@@ -171,6 +181,65 @@ Route::resource('clientes', ClienteController::class);
         '/reportes/ventas/{id}/detalle',
         [ReporteController::class, 'detalle']
     )->name('reportes.ventas.detalle');
+
+    Route::get(
+        '/reportes/ventas/{id}/detalle/pdf',
+        [ReporteController::class,'detallePDF']
+    )->name('reportes.ventas.detalle.pdf');
+
+    Route::get(
+        '/reportes/ventas/{id}/detalle/imprimir',
+        [ReporteController::class,'detalleImprimir']
+    )->name('reportes.ventas.detalle.imprimir');
+    
+    Route::get(
+        '/reportes/inventario',
+        [ReporteController::class,'inventario']
+    )->name('reportes.inventario');
+
+    Route::get(
+        '/reportes/inventario',
+        [ReporteController::class,'inventario']
+    )->name('reportes.inventario');
+
+    Route::get(
+        '/reportes/inventario/excel',
+        [ReporteController::class,'inventarioExcel']
+    )->name('reportes.inventario.excel');
+
+    Route::get(
+        '/reportes/inventario/pdf',
+        [ReporteController::class,'inventarioPdf']
+    )->name('reportes.inventario.pdf');
+
+    Route::get(
+        '/reportes/inventario/imprimir',
+        [ReporteController::class,'inventarioImprimir']
+    )->name('reportes.inventario.imprimir');
+
+    Route::get(
+        '/reportes/inventario/imprimir',
+        [ReporteController::class, 'inventarioImprimir']
+    )->name('reportes.inventario.imprimir');
+
+    Route::get(
+        '/reportes/caja',
+        [ReporteController::class,'caja']
+    )->name('reportes.caja');
+
+    Route::get('/reportes/auditoria', [ReporteController::class, 'auditoria'])
+        ->name('reportes.auditoria');
+
+    Route::get('/reportes/auditoria/excel',
+
+    [ReporteController::class,'auditoriaExcel'])
+        ->name('reportes.auditoria.excel');
+
+    Route::get('/reportes/auditoria/pdf',
+        [ReporteController::class,'auditoriaPdf'])
+        ->name('reportes.auditoria.pdf');
+
+    
 
 //Backups
     Route::middleware('auth')->group(function () {

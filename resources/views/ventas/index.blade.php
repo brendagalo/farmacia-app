@@ -16,6 +16,7 @@
 
 <h3>Ventas</h3>
 
+
     <div class="mb-3">
 
         <a href="{{ route('ventas.historial') }}"
@@ -26,6 +27,43 @@
         </a>
 
     </div>
+
+    @if(session('venta_finalizada'))
+
+    <div class="alert alert-success shadow">
+
+        <h5>✅ Venta realizada correctamente</h5>
+
+        <div class="mt-3">
+
+            <a href="{{ route('ventas.voucher', session('id_venta')) }}"
+            target="_blank"
+            id="btnImprimir"
+            class="btn btn-primary">
+
+                🖨 Imprimir recibo
+
+            </a>
+
+            <a href="{{ route('ventas.show', session('id_venta')) }}"
+            class="btn btn-info text-white">
+
+                👁 Ver venta
+
+            </a>
+
+            <a href="{{ route('ventas.index') }}"
+            class="btn btn-success">
+
+                ➕ Nueva venta
+
+            </a>
+
+        </div>
+
+    </div>
+
+    @endif
 
     <div class="row">
 
@@ -40,25 +78,27 @@
             <div class="card-body">
 
                 <div class="row">
-                    @foreach($productos as $p)
-                    <div class="col-md-4 mb-3 producto-item"
-                        data-id="{{ $p->id_producto }}"
-                        data-nombre="{{ strtolower($p->nombre) }}"
-                        data-codigo="{{ $p->codigo_barra }}"
-                        data-precio="{{ $p->precio_venta }}"
-                        data-stock="{{ $p->stock_actual }}">    
-                    
-    <!---
-                        <div class="card p-2">
-                            <h6>{{ $p->nombre }}</h6>
-                            <p>S/ {{ $p->precio_venta }}</p>
 
-                            <button class="btn btn-primary btn-sm"
-                                onclick="add({{ $p->id_producto }}, '{{ $p->nombre }}', {{ $p->precio_venta }}, {{ $p->stock_actual }})">
-                                Agregar
-                            </button>
-                        </div>
-    -->
+               
+                    @foreach($productos as $p)
+                        <div class="col-md-4 mb-3 producto-item"
+                            data-id="{{ $p->id_producto }}"
+                            data-nombre="{{ strtolower($p->nombre) }}"
+                            data-codigo="{{ $p->codigo_barra }}"
+                            data-precio="{{ $p->precio_venta }}"
+                            data-stock="{{ $p->stock_actual }}">    
+                        
+        <!---
+                            <div class="card p-2">
+                                <h6>{{ $p->nombre }}</h6>
+                                <p>S/ {{ $p->precio_venta }}</p>
+
+                                <button class="btn btn-primary btn-sm"
+                                    onclick="add({{ $p->id_producto }}, '{{ $p->nombre }}', {{ $p->precio_venta }}, {{ $p->stock_actual }})">
+                                    Agregar
+                                </button>
+                            </div>
+        -->
 
 
         <div class="card p-2">
@@ -140,8 +180,8 @@
                     </div>
 
                     <div class="mb-2">
-                        <label>DNI</label>
-                        <input type="text" name="cliente_dni" class="form-control">
+                        <label>Teléfono Cliente</label>
+                        <input type="text" name="telefono" class="form-control">
                     </div>
 
                     <div class="mb-2">
@@ -435,6 +475,7 @@ document.getElementById("metodo_pago")
 
 });
 actualizarMetodoPago();
+
 function validarVenta(){
 
     if(carrito.length===0){
@@ -448,6 +489,26 @@ function validarVenta(){
     return true;
 
 }
+//imprimir Voucher
+document.addEventListener("DOMContentLoaded", function () {
+
+    const btn = document.getElementById("btnImprimir");
+
+    if(btn){
+
+        btn.addEventListener("click", function(){
+
+            setTimeout(function(){
+
+                btn.style.display = "none";
+
+            },800);
+
+        });
+
+    }
+
+});
 </script>
 ``
 

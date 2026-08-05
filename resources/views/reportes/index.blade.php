@@ -51,12 +51,12 @@
                         Reporte de productos.
                     </p>
 
-                    <a href="#"
-                    class="btn btn-success">
+                        <a href="{{ route('reportes.inventario') }}"
+                        class="btn btn-success">
 
-                        Abrir
+                            Abrir
 
-                    </a>
+                        </a>
 
                 </div>
 
@@ -76,7 +76,7 @@
                         Arqueos y movimientos.
                     </p>
 
-                    <a href="#"
+                    <a href="{{ route('reportes.caja') }}"
                     class="btn btn-warning">
 
                         Abrir
@@ -101,7 +101,7 @@
                         Historial del sistema.
                     </p>
 
-                    <a href="#"
+                    <a href="{{ route('reportes.auditoria') }}"
                     class="btn btn-danger">
 
                         Abrir

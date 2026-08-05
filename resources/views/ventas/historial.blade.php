@@ -138,6 +138,30 @@
 
                     </form>
 
+                    <form
+                        action="{{ route('ventas.imprimir',$venta->id_venta) }}"
+                        method="GET"
+                        style="display:inline;">
+                        @csrf
+                        method="GET"
+                        <button
+                            class="btn btn-secondary btn-sm"
+                            onclick="return confirm('¿Desea imprimir esta venta?')">   
+                        
+                            Imprimir
+                        </button>
+
+                    </form>
+
+
+                    {{--
+                        <a href="{{ route('ventas.imprimir',$venta->id_venta) }}"
+                       class="btn btn-secondary btn-sm">
+
+                        Imprimir
+
+                    </a>
+                    --}}
                     @endif
 
                 </td>
